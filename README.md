@@ -62,9 +62,9 @@ python -m unittest discover -s tests -v
 The initial scaffold contains no unit tests, so this currently discovers zero tests; that is not milestone coverage. Add at least two tests per approved use case (approximately 20–30 total, more as needed), including success and failure/boundary conditions. Record each in the required spreadsheet. See docs/test-plan.md.
 
 ## Team workflow
-Proposed ownership, pending team confirmation: Joshua—CLI/loader and memory initialization; Hayden—arithmetic; Hunter—I/O and load/store; Colton—control flow. The group integrates the execution loop and reviews documentation.
+Proposed ownership, pending team confirmation: Person 1—CLI/loader and memory initialization; Person 2—arithmetic; Person 3—I/O and load/store; Person 4—control flow. The group integrates the execution loop and reviews documentation.
 
-Branch from updated main, for example `git switch -c feature/arithmetic`. Commit your own code and tests under your own account, push the branch, and open a pull request. Have one teammate review before merging. Keep shared interface changes coordinated through Jira and the sprint meeting. All four members must contribute code; this setup commit does not fulfill that requirement for the group.
+Branch from updated main, for example `git switch -c feature/arithmetic`. Commit your own code and tests under your own account, push the branch, and open a pull request. Have one teammate review before merging. Keep shared interface changes coordinated through Jira and the sprint meeting.
 
 ## Submission
 Complete the checklist in docs/milestone-2.md. Keep README.txt and these launch instructions synchronized as behavior changes. Verify a fresh clone using only README instructions before submission.
