@@ -1,4 +1,4 @@
-"""Joshua's proposed area: BasicML file loading and validation."""
+"""Person 1's proposed area: BasicML file loading and validation."""
 
 
 def load_program(path: str) -> list[int]:

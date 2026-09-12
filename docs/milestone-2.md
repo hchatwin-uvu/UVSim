@@ -12,13 +12,14 @@ Instructor video clarifications have not been transcribed or incorporated.
 - [ ] Test1 and Test2 pass, plus additional programs for remaining opcodes and errors.
 - [ ] Fresh-clone check using README.txt alone.
 
-## Proposed ownership — confirm at the meeting
-| Member | Code area | Related work |
+## Work areas — assign people at the meeting
+Person 1–4 are unassigned placeholders. Choose who takes each area during the meeting.
+| Role | Code area | Related work |
 | --- | --- | --- |
-| Joshua | main.py, loader.py, UVSim.load | Loader tests; Scrum coordination and meeting report |
-| Hayden | operations/arithmetic.py | Arithmetic tests and related use cases |
-| Hunter | operations/io_memory.py | I/O and memory tests and related use cases |
-| Colton | operations/control_flow.py | Branch/HALT tests and related use cases |
+| Person 1 | main.py, loader.py, UVSim.load | Loader tests; Scrum coordination and meeting report |
+| Person 2 | operations/arithmetic.py | Arithmetic tests and related use cases |
+| Person 3 | operations/io_memory.py | I/O and memory tests and related use cases |
+| Person 4 | operations/control_flow.py | Branch/HALT tests and related use cases |
 | Group | UVSim.step/run integration | Review all tests, examples, and documentation |
 
 Assign one integration owner for step/run before coding. Also assign design,
