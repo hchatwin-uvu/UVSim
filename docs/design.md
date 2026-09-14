@@ -47,3 +47,19 @@ flows, and postconditions. Keep 10–15 use cases and at least two tests per cas
 - Error types and messages; what state remains after failed load/execution.
 
 Separate assignment requirements from chosen policies when documenting decisions.
+
+## Arithmetic implementation choices (UC-07 through UC-10)
+The arithmetic module exposes `add(machine, operand)`, `subtract(machine, operand)`,
+`divide(machine, operand)`, and `multiply(machine, operand)`. Each accepts the
+existing UVSim instance and an integer memory address, and returns None.
+`ARITHMETIC_HANDLERS` maps opcodes 30–33 to these functions for the future
+execution dispatcher. Handlers change only the accumulator; the execution loop
+owns instruction-counter advancement. The shared step/run scaffold is unchanged.
+
+These are local implementation choices for team integration, not previously
+agreed assignment requirements: division truncates toward zero, and accumulator
+results must fit MIN_WORD through MAX_WORD (-9999 through 9999). Division by zero,
+out-of-range results, and addresses outside 00–99 raise ValueError, matching the
+CLI's existing error reporting. Failures leave machine state unchanged. Handlers
+expect integer accumulator and memory values validated by the loader or other
+instruction handlers. Tests are in tests/test_arithmetic.py.
