@@ -35,9 +35,66 @@ class UVSim:
             self.memory[address] = word
 
     def step(self) -> None:
-        """TODO: fetch, decode, dispatch one instruction, and update the counter."""
-        raise NotImplementedError("Instruction execution is not implemented yet.")
+        """Fetch, decode, and execute one instruction."""
+        import sys
+
+        # Local imports avoid cycles because handler modules import UVSim.
+        from operations.arithmetic import ARITHMETIC_HANDLERS
+        from operations.control_flow import CONTROL_FLOW_HANDLERS
+        from operations.io_memory import (
+            handle_read,
+            handle_write,
+            handle_load,
+            handle_store,
+        )
+
+        if self.halted:
+            return
+
+        address = self.instruction_counter
+        if not 0 <= address < MEMORY_SIZE:
+            raise ValueError(
+                "Instruction counter is outside memory addresses 00–99."
+            )
+
+        instruction = self.memory[address]
+        self.instruction_register = instruction
+
+        if instruction < 0:
+            raise ValueError(
+                f"Negative instruction at address {address:02d}."
+            )
+
+        opcode, operand = divmod(instruction, 100)
+        handlers = {
+            10: handle_read,
+            11: handle_write,
+            20: handle_load,
+            21: handle_store,
+            **ARITHMETIC_HANDLERS,
+            **CONTROL_FLOW_HANDLERS,
+        }
+
+        handler = handlers.get(opcode)
+        if handler is None:
+            raise ValueError(
+                f"Invalid opcode {opcode:02d} at address {address:02d}."
+            )
+
+        # Continue forward unless a branch handler changes the destination.
+        self.instruction_counter = address + 1
+
+        try:
+            if opcode == 10:
+                print("Enter a word (-9999 to 9999): ", end="", flush=True)
+                handler(self, operand, sys.stdin)
+            else:
+                handler(self, operand)
+        except (ValueError, EOFError):
+            self.instruction_counter = address
+            raise
 
     def run(self) -> None:
-        """TODO: execute until HALT; agree on runtime error handling first."""
-        raise NotImplementedError("The execution loop is not implemented yet.")
+        """Execute instructions until HALT or an error."""
+        while not self.halted:
+            self.step()
