@@ -2,10 +2,10 @@
 - Date/time: 9/16/26
 - Attendees: Hunter, Josh, Colton Hayden
 - Scrum Master: Josh
-- Meeting objective: Initial assignments of milestone 2.
+- Meeting objective: status update for milestone 2.
 
 ## Progress and blockers
-status update on milestone 2 due on friday
+status update on milestone 2 due on Friday
 
 
 ## Decisions
