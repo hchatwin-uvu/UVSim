@@ -1,5 +1,3 @@
-# Sprint meeting report template
-Copy this file to a dated report after an actual meeting. Do not submit it as a completed report.
 
 - Date/time: 9/12/26
 - Attendees: Hunter, Josh, Colton Hayden
