@@ -7,7 +7,7 @@ from uvsim import UVSim
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="UVSim BasicML simulator (starter scaffold)")
+    parser = argparse.ArgumentParser(description="UVSim BasicML simulator")
     parser.add_argument("file", nargs="?", help="BasicML program file")
     args = parser.parse_args()
     try:
