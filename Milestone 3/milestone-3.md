@@ -1,28 +1,12 @@
-# Milestone 3 plan
-Based on the written assignment shared in the milestone conversation.
-Milestone 2 written grading feedback and the Week 6 instructor video transcript are incorporated below.
-Hayden is the scrum leader for this sprint. Planning only; implementation and deliverables are still to be completed.
-
-## Week 6 video clarifications
-
-- **Sprint/deadline (00:00):** September 19 through Friday night, October 2, 2026. Confirm the exact submission time in Canvas.
-- **Submission location (02:01–02:29):** include Milestone 2 corrections with the Milestone 3 submission; do not resubmit through the Milestone 2 Canvas listing.
-- **GUI-only interaction (04:42–05:07):** file selection, READ/WRITE, errors, and all other user messages belong in the GUI; users must not need an outside console to operate the app.
-- **Wireframe flexibility (06:05–07:04):** designing first is our proposed workflow, not an instructor requirement. An annotated screenshot of the implemented GUI is acceptable; the final document must reflect the current GUI and explain its controls.
-- **Class document (07:57–08:30):** describe fields and class relationships as well as the required method details. Text, UML diagrams, or both are acceptable.
-- **Meeting reports (10:31):** submit at least two logs for this two-week sprint, with at least one meeting per week.
-- **SRS process (11:02–14:36):** the instructor calls this the Delphi method. Each pair reviews the other pair's drafts, then the full team merges the two group documents. All seven labeled documents are required.
-- **Test scope (15:26–17:42):** the instructor will reuse the six supplied files. Test5 should be rejected gracefully as malformed; it is not a program that must execute successfully.
-
 ## Rubric checklist
 
-- [ ] Previous milestone modifications (10 points): complete the instructor feedback checklist below and include the revised code/design documents and supporting documentation in the Milestone 3 submission only.
+- [ ] Previous milestone modifications (10 points): complete the instructor feedback checklist below and resubmit the revised code/design documents and supporting documentation.
 - [ ] GUI design document (10 points): create annotated wireframes for every window/screen; label each control and explain its use and workflow.
-- [ ] Working GUI (35 points): allow users to select, open, and run a UVSim file with GUI input, output, and understandable errors. All user-facing messages and interaction must stay in the GUI, without requiring console interaction. Preserve existing core functionality and all 12 opcodes; no new core features are required.
-- [ ] Class definition document (10 points): document every class, including any interfaces, base classes, and abstract classes. Include each class's purpose, fields, relationships, and each function's purpose, parameters, return value, and pre-/post-conditions.
+- [ ] Working GUI (35 points): allow users to select, open, and run a UVSim file with GUI input, output, and understandable errors. Preserve existing core functionality and all 12 opcodes; no new core features are required.
+- [ ] Class definition document (10 points): document every class, including any interfaces, base classes, and abstract classes. Include each class's purpose and each function's purpose, parameters, return value, and pre-/post-conditions.
 - [ ] Modular OO design: keep UI code out of machine state and business logic; divide responsibilities into manageable, loosely coupled classes.
 - [ ] SRS documents (20 points): submit four individual drafts, two sub-team merged drafts, and one final official SRS for the current four-person team; label authors/groups and the final version clearly.
-- [ ] Other documents (15 points): revised standalone README.txt (10 points) covering installation, launch, dependencies, and all GUI controls; at least two real sprint meeting reports, one per week (5 points).
+- [ ] Other documents (15 points): revised standalone README.txt (10 points) covering installation, launch, dependencies, and all GUI controls; real sprint meeting reports at least once per week (5 points).
 - [ ] Verify all six instructor test files through the GUI, rerun existing unit tests, and check a fresh clone using README.txt alone.
 
 ## Milestone 2 feedback — required follow-up
@@ -45,47 +29,44 @@ These are planned corrections, not completed fixes. Track ownership and progress
 
 This document is the sprint task tracker. All tasks start unassigned. To claim a task, replace `Unassigned` with your name and enter an agreed due date. Use `Not started`, `In progress`, `Blocked`, or `Done`; add a file/PR link or blocker in the last column. Mark a task Done only when its completion criteria are met, and update the related rubric/feedback checkboxes above.
 
-Meeting 1 date: TBD. Meeting 2 date: TBD. Submission deadline: Friday night, October 2, 2026 (exact Canvas time to confirm). Schedule the meetings in separate sprint weeks, with enough time after Meeting 2 for implementation and verification.
-
 ## Meeting 1 — first round of work
 
 Each of the four teammates can pick up one main task (M3-01 through M3-04), plus their own independent SRS draft. Review the instructor feedback and agree on deadlines at the meeting. GUI-dependent feedback fixes continue in the second round.
 
-| ID | Task and completion criteria | Owner | Due | Status | Evidence / blocker |
-| --- | --- | --- | --- | --- | --- |
-| M3-01 | **Milestone 2 fixes:** split combined use cases, reformat Main Flows, update spreadsheet references, fix WRITE formatting, implement sign-preserving overflow truncation with updated tests, and clarify README paths/sample files. Document required GUI retry behavior for M3-05/M3-06. | Unassigned | TBD | Not started | — |
-| M3-02 | **GUI design:** propose a toolkit and create annotated wireframes for all screens, file selection, execution, READ/WRITE, completion, and error recovery. Ready for team review at Meeting 2. | Unassigned | TBD | Not started | — |
-| M3-03 | **Class design:** propose class responsibilities and GUI/simulator I/O interfaces. Draft the class definition document with fields, class relationships, method purposes, parameters, returns, and pre-/post-conditions. Ready for team review at Meeting 2. | Unassigned | TBD | Not started | — |
-| M3-04 | **Regression preparation:** assemble all six unchanged instructor files and document inputs, expected outputs, and checks for overflow, WRITE formatting, invalid READ retry, and file recovery. Identify affected existing tests; do not record unrun checks as passing. | Unassigned | TBD | Not started | — |
-| M3-I1 | **Individual SRS draft 1:** independently write at least 15 functional + 3 non-functional requirements, label authorship, and submit to the scrum leader. | Unassigned | Before Meeting 2 | Not started | — |
-| M3-I2 | **Individual SRS draft 2:** same criteria; a different teammate claims this draft. | Unassigned | Before Meeting 2 | Not started | — |
-| M3-I3 | **Individual SRS draft 3:** same criteria; a different teammate claims this draft. | Unassigned | Before Meeting 2 | Not started | — |
-| M3-I4 | **Individual SRS draft 4:** same criteria; the remaining teammate claims this draft. | Unassigned | Before Meeting 2 | Not started | — |
-| M3-M1 | **Meeting 1 report:** record actual attendance, decisions, claimed tasks, due dates, and next meeting date. | Unassigned | After Meeting 1 | Not started | — |
+| ID | Task and completion criteria | Owner |
+| --- | --- | --- |
+| M3-01 | **Milestone 2 fixes:** split combined use cases, reformat Main Flows, update spreadsheet references, fix WRITE formatting, implement sign-preserving overflow truncation with updated tests, and clarify README paths/sample files. Document required GUI retry behavior for M3-05/M3-06. | Unassigned |
+| M3-02 | **GUI design:** propose a toolkit and create annotated wireframes for all screens, file selection, execution, READ/WRITE, completion, and error recovery. Ready for team review at Meeting 2. | Unassigned |
+| M3-03 | **Class design:** propose class responsibilities and GUI/simulator I/O interfaces. Draft the class definition document with method purposes, parameters, returns, and pre-/post-conditions. Ready for team review at Meeting 2. | Unassigned |
+| M3-04 | **Regression preparation:** assemble all six unchanged instructor files and document inputs, expected outputs, and checks for overflow, WRITE formatting, invalid READ retry, and file recovery. Identify affected existing tests; do not record unrun checks as passing. | Unassigned |
+| M3-I1 | **Individual SRS draft 1:** independently write at least 15 functional + 3 non-functional requirements, label authorship, and submit to the scrum leader. | Unassigned |
+| M3-I2 | **Individual SRS draft 2:** same criteria; a different teammate claims this draft. | Unassigned |
+| M3-I3 | **Individual SRS draft 3:** same criteria; a different teammate claims this draft. | Unassigned |
+| M3-I4 | **Individual SRS draft 4:** same criteria; the remaining teammate claims this draft. | Unassigned |
 
 ## Meeting 2 — review and second round of work
 
-Review the first-round fixes, wireframes, class interfaces, and regression plan. Our proposed workflow is to approve the GUI design and shared interfaces before implementation; the instructor also permits building the GUI first and documenting it with annotated screenshots. The four main follow-up tasks are M3-05 through M3-08; claim them based on availability and the agreed design.
+Review the first-round fixes, wireframes, class interfaces, and regression plan. Approve the GUI design and shared interfaces before implementation. The four main follow-up tasks are M3-05 through M3-08; claim them based on availability and the agreed design.
 
-| ID | Task and completion criteria | Owner | Due | Status | Evidence / blocker |
-| --- | --- | --- | --- | --- | --- |
-| M3-05 | **GUI implementation:** build the approved screens and controls for file selection, running, input, output, and completion. Keep all user interaction and messages in the GUI, including file/READ errors, and support retry without restarting. Depends on M3-02 and agreed interfaces from M3-03; coordinate with M3-06. Update wireframes to match the result. | Unassigned | TBD | Not started | — |
-| M3-06 | **Simulator refactoring and class documentation:** implement the approved separation of GUI and simulator logic, preserve execution state during READ retries, and keep execution responsive. Integrate M3-01 behavior and coordinate with M3-05. Finalize documentation for every implemented class and method. | Unassigned | TBD | Not started | — |
-| M3-07 | **Integration and feedback verification:** coordinate reviewed changes from M3-01/M3-05/M3-06, resolve integration issues, and verify every instructor feedback item against the working app/documents. Link evidence and flag remaining blockers. | Unassigned | TBD | Not started | — |
-| M3-08 | **Final regression and README:** use M3-04's plan to check the integrated GUI against all six files, retry behavior, and existing unit tests; record actual results. Finalize README.txt with dependencies, installation, launch, every GUI control, arbitrary file paths, and included samples. Verify a fresh clone using only the README. | Unassigned | TBD | Not started | — |
-| M3-S1 | **Group SRS merge 1:** two teammates review the other pair's individual drafts and produce one labeled, consistent document with at least 15 functional + 3 non-functional requirements. | Unassigned pair | Meeting 2 | Not started | — |
-| M3-S2 | **Group SRS merge 2:** the other pair reviews the first pair's drafts and produces a second labeled merged document with the same minimum counts. | Unassigned pair | Meeting 2 | Not started | — |
-| M3-S3 | **Final SRS merge:** after M3-S1/M3-S2, reconvene as all four teammates to create the final official SRS. Preserve and label all seven documents. The owner coordinates; the full team participates. | Unassigned | Meeting 2, after group merges | Not started | — |
-| M3-M2 | **Meeting 2 report:** record actual attendance, review decisions, SRS groups, second-round task claims, deadlines, and blockers. | Unassigned | After Meeting 2 | Not started | — |
-| M3-09 | **Submission review:** check all rubric items, seven SRS documents, revised design/use cases and spreadsheet, GUI wireframes, class document, source code, README, test results, and weekly meeting reports. Package the required deliverables for the Milestone 3 Canvas submission only and identify feedback fixes for regrade review; do not resubmit to Milestone 2. | Unassigned | Before submission | Not started | — |
+| ID | Task and completion criteria | Owner |
+| --- | --- | --- |
+| M3-05 | **GUI implementation:** build the approved screens and controls for file selection, running, input, output, and completion. Show file/READ errors in the GUI and support retry without restarting. Depends on M3-02 and agreed interfaces from M3-03; coordinate with M3-06. Update wireframes to match the result. | Unassigned |
+| M3-06 | **Simulator refactoring and class documentation:** implement the approved separation of GUI and simulator logic, preserve execution state during READ retries, and keep execution responsive. Integrate M3-01 behavior and coordinate with M3-05. Finalize documentation for every implemented class and method. | Unassigned |
+| M3-07 | **Integration and feedback verification:** coordinate reviewed changes from M3-01/M3-05/M3-06, resolve integration issues, and verify every instructor feedback item against the working app/documents. Link evidence and flag remaining blockers. | Unassigned |
+| M3-08 | **Final regression and README:** use M3-04's plan to check the integrated GUI against all six files, retry behavior, and existing unit tests; record actual results. Finalize README.txt with dependencies, installation, launch, every GUI control, arbitrary file paths, and included samples. Verify a fresh clone using only the README. | Unassigned |
+| M3-S1 | **Group SRS merge 1:** two teammates review the other pair's individual drafts and produce one labeled, consistent document with at least 15 functional + 3 non-functional requirements. | Unassigned pair |
+| M3-S2 | **Group SRS merge 2:** the other pair reviews the first pair's drafts and produces a second labeled merged document with the same minimum counts. | Unassigned pair |
+| M3-S3 | **Final SRS merge:** after M3-S1/M3-S2, reconvene as all four teammates to create the final official SRS. Preserve and label all seven documents. The owner coordinates; the full team participates. | Unassigned |
+| M3-M2 | **Meeting 2 report:** record actual attendance, review decisions, SRS groups, second-round task claims, deadlines, and blockers. | Unassigned |
+| M3-09 | **Submission review:** check all rubric items, seven SRS documents, revised design/use cases and spreadsheet, GUI wireframes, class document, source code, README, test results, and weekly meeting reports. Package the required deliverables and identify feedback fixes for regrade review. | Unassigned |
 
-Reserve time at Meeting 2 for both group SRS merges and the full-team merge. If they cannot finish in that session, schedule a continuation before submission. Submit at least two meeting logs, with at least one documented meeting per week; add report tasks here if the sprint needs more meetings.
+Reserve time at Meeting 2 for both group SRS merges and the full-team merge. If they cannot finish in that session, schedule a continuation before submission. Keep at least one documented meeting per week; add report tasks here if the sprint needs more meetings.
 
-## SRS workflow — Delphi method, start early
+## SRS workflow — start early
 
 1. Each teammate independently writes at least 15 functional and 3 non-functional requirements **without consulting other teammates**. Use “the system shall…” wording, one idea per requirement, and audit clarity and subjective wording.
 2. Each teammate sends their labeled individual draft to Hayden. Preserve all four originals for submission.
-3. After collecting drafts, Hayden divides the team into two groups and gives each pair the other pair's two individual drafts to review.
+3. After collecting drafts, Hayden divides the team into two groups and assigns half of the documents to each, ideally the other group's drafts.
 4. Each group discusses, combines, and rewrites its assigned requirements into one consistent document with at least 15 functional and 3 non-functional requirements. Remove repetition, redundancy, and contradictions; do not simply concatenate drafts.
 5. Both groups send their labeled merged documents to Hayden.
 6. The full team meets to merge those two documents into one final official SRS with at least 15 functional and 3 non-functional requirements, again checking consistency.
@@ -113,9 +94,9 @@ Use the supplied instructor files unchanged when assembling the regression set. 
 
 ## Meeting decisions to record
 
-- [ ] Set meeting dates and confirm the exact October 2 submission time in Canvas; record it here.
+- [ ] Confirm meeting dates and the course submission deadline in this document.
 - [ ] Claim first-round tasks and set due dates; each teammate claims exactly one independent SRS draft.
-- [ ] Review the video clarifications above as a team and incorporate them into claimed tasks.
+- [ ] Review the instructor video for any additional requirements.
 - [ ] At Meeting 2, approve the GUI toolkit, workflow, class responsibilities, and I/O interfaces.
 - [ ] Form the two SRS review groups after all individual drafts are collected; record members and assigned source documents in M3-S1/M3-S2.
 - [ ] Claim second-round tasks, including integration, documentation, meeting reports, and submission review.
