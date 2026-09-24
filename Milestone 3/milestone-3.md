@@ -35,7 +35,7 @@ Each of the four teammates can pick up one main task (M3-01 through M3-04), plus
 
 | ID | Task and completion criteria | Owner |
 | --- | --- | --- |
-| M3-01 | **Milestone 2 fixes:** split combined use cases, reformat Main Flows, update spreadsheet references, fix WRITE formatting, implement sign-preserving overflow truncation with updated tests, and clarify README paths/sample files. Document required GUI retry behavior for M3-05/M3-06. | Unassigned |
+| M3-01 | **Milestone 2 fixes:** split combined use cases, reformat Main Flows, update spreadsheet references, fix WRITE formatting, implement sign-preserving overflow truncation with updated tests, and clarify README paths/sample files. Document required GUI retry behavior for M3-05/M3-06. | Hayden |
 | M3-02 | **GUI design:** propose a toolkit and create annotated wireframes for all screens, file selection, execution, READ/WRITE, completion, and error recovery. Ready for team review at Meeting 2. | Unassigned |
 | M3-03 | **Class design:** propose class responsibilities and GUI/simulator I/O interfaces. Draft the class definition document with method purposes, parameters, returns, and pre-/post-conditions. Ready for team review at Meeting 2. | Unassigned |
 | M3-04 | **Regression preparation:** assemble all six unchanged instructor files and document inputs, expected outputs, and checks for overflow, WRITE formatting, invalid READ retry, and file recovery. Identify affected existing tests; do not record unrun checks as passing. | Unassigned |
