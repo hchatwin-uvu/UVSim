@@ -14,9 +14,14 @@ def handle_read(sim, operand: int, input_file_obj) -> None:
   else:
     raise ValueError(f"Value {val} out of 4-digit signed word range.")
 
+def format_word(value: int) -> str:
+  """Four magnitude digits with a separate minus sign for negative values."""
+  return ("-" if value < 0 else "") + f"{abs(value):04d}"
+
+
 def handle_write (sim, operand: int) -> None:
   value = sim.memory[operand]
-  print(f"{value:05d}")
+  print(format_word(value))
 
 def handle_load(sim, operand: int) -> None:
   sim.accumulator = sim.memory[operand]

@@ -84,18 +84,19 @@ class ArithmeticTests(unittest.TestCase):
         multiply(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, -35)
 
-    def test_overflow_preserves_accumulator(self) -> None:
-        for handler, accumulator, value in (
-            (add, MAX_WORD, 1), (add, MIN_WORD, -1),
-            (subtract, MIN_WORD, 1), (subtract, MAX_WORD, -1),
-            (multiply, MAX_WORD, 2), (multiply, MIN_WORD, 2),
+    def test_overflow_truncates_and_preserves_sign(self) -> None:
+        for handler, accumulator, value, expected in (
+            (add, MAX_WORD, 1, 0), (add, MIN_WORD, -1, 0),
+            (subtract, MIN_WORD, 1, 0), (subtract, MAX_WORD, -1, 0),
+            (multiply, MAX_WORD, 2, 9998), (multiply, MIN_WORD, 2, -9998),
+            (multiply, 2469, 5, 2345), (multiply, -2469, 5, -2345),
+            (multiply, MAX_WORD, MAX_WORD, 1),
         ):
             with self.subTest(handler=handler.__name__, accumulator=accumulator):
                 self.machine.accumulator = accumulator
                 self.machine.memory[self.operand] = value
-                with self.assertRaisesRegex(ValueError, "between -9999 and 9999"):
-                    handler(self.machine, self.operand)
-                self.assertEqual(self.machine.accumulator, accumulator)
+                handler(self.machine, self.operand)
+                self.assertEqual(self.machine.accumulator, expected)
 
     def test_word_limits_are_allowed(self) -> None:
         for handler, value in ((add, 0), (subtract, 0), (divide, 1), (multiply, 1)):
