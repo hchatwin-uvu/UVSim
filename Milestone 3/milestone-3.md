@@ -13,17 +13,17 @@
 
 Milestone 2 received 95/100: design 20/20, application 35/40, unit tests 30/30, and other documents 10/10. The instructor offered to regrade the application section after the display and error-handling fixes are included in Milestone 3; recovering points is subject to that review.
 
-- [ ] Split combined use cases: give ADD, SUBTRACT, and each branching operation its own separately tracked use case.
-- [ ] Reformat longer Main Flow sections into clear bulleted or numbered steps.
-- [ ] Update the unit-test spreadsheet's use-case references to match the revised use cases.
-- [ ] Correct WRITE formatting: show 1234 rather than 01234, with no extra fifth numeric digit; preserve the sign for negative values. Update the documented output format.
+- [x] Split combined use cases: give ADD, SUBTRACT, and each branching operation its own separately tracked use case.
+- [x] Reformat longer Main Flow sections into clear bulleted or numbered steps.
+- [x] Update the unit-test spreadsheet's use-case references to match the revised use cases.
+- [x] Correct WRITE formatting: show 1234 rather than 01234, with no extra fifth numeric digit; preserve the sign for negative values. Update the documented output format.
 - [ ] Recover from invalid or out-of-range READ input inside the GUI: explain the error and allow re-entry while preserving the current execution and pending READ instruction. Continue after valid input without restarting the program.
 - [ ] Recover from missing/unreadable files and malformed file contents inside the GUI: explain the problem and allow selection of another file without restarting the application. Malformed files do not need to execute.
-- [ ] Replace arithmetic overflow exceptions with truncation of higher-order digits, preserving the sign: 12345 becomes 2345 and -12345 becomes -2345. Store the truncated value in the accumulator and continue execution using it. READ must still reject values outside -9999 to 9999.
-- [ ] Revise README.txt to explain that files can be opened from any accessible path, not only the programs folder, and that the repository includes sample files users can run. Adapt these explanations to the GUI workflow.
+- [x] Replace arithmetic overflow exceptions with truncation of higher-order digits, preserving the sign: 12345 becomes 2345 and -12345 becomes -2345. Store the truncated value in the accumulator and continue execution using it. READ must still reject values outside -9999 to 9999.
+- [x] Revise README.txt to explain that files can be opened from any accessible path, not only the programs folder, and that the repository includes sample files users can run. Adapt these explanations to the GUI workflow.
 - [ ] Update affected design descriptions, tests, and documentation together; include verification of retry behavior, WRITE formatting, and positive/negative overflow truncation in the final review.
 
-These are planned corrections, not completed fixes. Track ownership and progress in the tasks below, and include the corrected application for the instructor's regrade review.
+The checked corrections are implemented locally; GUI recovery remains deferred. Completed work is recorded in [feedback-changes.md](feedback-changes.md). Include them with the Milestone 3 submission for instructor review; no submission has been made.
 
 ## Task tracking — claim work here
 
@@ -43,6 +43,8 @@ Each of the four teammates can pick up one main task (M3-01 through M3-04), plus
 | M3-I2 | **Individual SRS draft 2:** same criteria; a different teammate claims this draft. | Unassigned |
 | M3-I3 | **Individual SRS draft 3:** same criteria; a different teammate claims this draft. | Unassigned |
 | M3-I4 | **Individual SRS draft 4:** same criteria; the remaining teammate claims this draft. | Unassigned |
+
+M3-01 covers the completed non-GUI corrections. GUI implementation, refactoring for GUI input/output, and recoverable GUI errors remain unstarted work in M3-05/M3-06. M3-07/M3-08 cover later integration and validation.
 
 ## Meeting 2 — review and second round of work
 

@@ -27,7 +27,7 @@ commands, and step-by-step prototype checks.
 | `loader.py` | Read the program file and return validated integer words in order without modifying machine state. |
 | `uvsim.py` | Own machine state, initialize memory, fetch and decode instructions, dispatch handlers, and control execution. |
 | `operations/io_memory.py` | Implement READ, WRITE, LOAD, and STORE. |
-| `operations/arithmetic.py` | Implement ADD, SUBTRACT, DIVIDE, and MULTIPLY, including arithmetic range checks. |
+| `operations/arithmetic.py` | Implement ADD, SUBTRACT, DIVIDE, and MULTIPLY, including sign-preserving overflow truncation. |
 | `operations/control_flow.py` | Implement BRANCH, BRANCHNEG, BRANCHZERO, and HALT. |
 
 Separating file parsing, execution, and operation handlers allows each area to
@@ -87,9 +87,11 @@ spreadsheet.
 
 - **Precondition:** The student has launched the CLI and has a program filename.
 - **Trigger:** The student supplies a filename argument or enters one at the prompt.
-- **Main flow:** Read and validate the file through UC-02, then load its words
-  starting at address 00. Reset the accumulator, instruction counter/register,
-  and halted flag before execution begins.
+**Main flow:**
+
+1. Read and validate the file through UC-02, then load its words starting at address 00.
+2. Reset the accumulator, instruction counter/register, and halted flag before execution begins.
+
 - **Alternate/error flow:** An empty prompted filename, unavailable file, or
   invalid file contents produces an error. No partial program is loaded.
 - **Postcondition:** A valid program is in memory, unused words are zero, and
@@ -99,9 +101,11 @@ spreadsheet.
 
 - **Precondition:** A program file can be opened for reading.
 - **Trigger:** The loader processes the file's lines.
-- **Main flow:** Strip surrounding whitespace, skip blank lines, require a sign
-  and exactly four decimal digits per remaining line, and convert to integers.
-  Accept at most 100 words in the range -9999 through 9999.
+**Main flow:**
+
+1. Strip surrounding whitespace, skip blank lines, require a sign and exactly four decimal digits per remaining line, and convert to integers.
+2. Accept at most 100 words in the range -9999 through 9999.
+
 - **Alternate/error flow:** Malformed words or excess capacity raise `ValueError`.
   An empty or all-blank file returns an empty list; executing the resulting
   zero-filled memory subsequently fails with opcode 00.
@@ -111,8 +115,10 @@ spreadsheet.
 ### UC-03 — READ console input into memory (10)
 
 - **Trigger:** Execution reaches READ.
-- **Main flow:** Display a prompt, read one console line, convert it to an integer,
-  check the word range, and store the value at the operand address.
+**Main flow:**
+
+1. Display a prompt, read one console line, convert it to an integer, check the word range, and store the value at the operand address.
+
 - **Alternate/error flow:** Nonnumeric or out-of-range input raises `ValueError`.
   Blank input or end of input raises `EOFError`. These failures do not change
   the destination. Keyboard input may be `7`, `-5`, or `+0007`; it does not
@@ -123,24 +129,31 @@ spreadsheet.
 ### UC-04 — WRITE memory to console (11)
 
 - **Trigger:** Execution reaches WRITE.
-- **Main flow:** Print the operand memory word with a newline using a five-character,
-  zero-padded decimal format.
+**Main flow:**
+
+1. Print the operand memory word with a newline using four zero-padded magnitude digits and a separate minus sign for negative values.
+
 - **Alternate flow:** Negative values retain their minus sign. For example,
-  12 prints as `00012`, -5 as `-0005`, and zero as `00000`.
+  12 prints as `0012`, -5 as `-0005`, and zero as `0000`.
 - **Postcondition:** One value is printed; memory and accumulator are unchanged.
 
 ### UC-05 — LOAD accumulator (20)
 
 - **Trigger:** Execution reaches LOAD.
-- **Main flow:** Copy the operand memory word into the accumulator.
+**Main flow:**
+
+1. Copy the operand memory word into the accumulator.
+
 - **Alternate flow:** Zero and negative values are copied without changing their sign.
 - **Postcondition:** The accumulator holds the selected word; memory is unchanged.
 
 ### UC-06 — STORE accumulator (21)
 
 - **Trigger:** Execution reaches STORE.
-- **Main flow:** Copy the accumulator into the operand memory address, replacing
-  its previous word.
+**Main flow:**
+
+1. Copy the accumulator into the operand memory address, replacing its previous word.
+
 - **Alternate flow:** The destination may previously have held data, an instruction,
   or an unused zero word.
 - **Postcondition:** The destination equals the accumulator; the accumulator is unchanged.
@@ -148,46 +161,55 @@ spreadsheet.
 ### UC-07 — ADD (30)
 
 - **Trigger:** Execution reaches ADD.
-- **Main flow:** Add the operand memory word to the accumulator and retain the
-  result in the accumulator.
+**Main flow:**
+
+1. Add the operand memory word to the accumulator and retain the result in the accumulator.
+
 - **Alternate/error flow:** Zero and negative operands are valid. A result outside
-  -9999 through 9999 raises `ValueError` and preserves the accumulator.
+  -9999 through 9999 discards higher-order magnitude digits, retains the sign, and continues.
 - **Postcondition:** The accumulator contains the valid sum; memory is unchanged.
 
 ### UC-08 — SUBTRACT (31)
 
 - **Trigger:** Execution reaches SUBTRACT.
-- **Main flow:** Subtract the operand memory word from the accumulator and retain
-  the result in the accumulator.
+**Main flow:**
+
+1. Subtract the operand memory word from the accumulator and retain the result in the accumulator.
+
 - **Alternate/error flow:** Negative operands and negative results are valid.
-  A result outside the word range raises `ValueError` and preserves the accumulator.
+  A result outside the word range is truncated to four magnitude digits, retaining the sign.
 - **Postcondition:** The accumulator contains the valid difference; memory is unchanged.
 
 ### UC-09 — DIVIDE (32)
 
 - **Trigger:** Execution reaches DIVIDE.
-- **Main flow:** Divide the accumulator by the operand memory word. Truncate any
-  fractional part toward zero and retain the integer quotient in the accumulator.
+**Main flow:**
+
+1. Divide the accumulator by the operand memory word.
+2. Truncate any fractional part toward zero and retain the integer quotient in the accumulator.
+
 - **Alternate/error flow:** For example, -7 divided by 3 yields -2. A zero divisor
-  raises `ValueError` and preserves the accumulator. The arithmetic result is
-  also checked against the word range.
+  raises `ValueError` and preserves the accumulator. The integer result is stored using the same sign-preserving four-digit truncation policy.
 - **Postcondition:** The accumulator contains the valid quotient; memory is unchanged.
 
 ### UC-10 — MULTIPLY (33)
 
 - **Trigger:** Execution reaches MULTIPLY.
-- **Main flow:** Multiply the accumulator by the operand memory word and retain
-  the result in the accumulator.
+**Main flow:**
+
+1. Multiply the accumulator by the operand memory word and retain the result in the accumulator.
+
 - **Alternate/error flow:** A zero operand produces zero. Negative operands are
-  valid. A result outside the word range raises `ValueError` and preserves the
-  accumulator.
+  valid. A result outside the word range discards higher-order magnitude digits and retains the sign; execution continues.
 - **Postcondition:** The accumulator contains the valid product; memory is unchanged.
 
 ### UC-11 — BRANCH (40)
 
 - **Trigger:** Execution reaches BRANCH.
-- **Main flow:** Replace the instruction counter with the operand address,
-  regardless of the accumulator's value.
+**Main flow:**
+
+1. Replace the instruction counter with the operand address, regardless of the accumulator's value.
+
 - **Alternate flow:** The target can be earlier, later, or the current instruction.
   Repeated branches can create a loop.
 - **Postcondition:** The next instruction is fetched at the target address;
@@ -196,8 +218,10 @@ spreadsheet.
 ### UC-12 — BRANCHNEG (41)
 
 - **Trigger:** Execution reaches BRANCHNEG.
-- **Main flow:** If the accumulator is negative, replace the instruction counter
-  with the operand address.
+**Main flow:**
+
+1. If the accumulator is negative, replace the instruction counter with the operand address.
+
 - **Alternate flow:** If the accumulator is zero or positive, keep the sequential
   next address already set by `step()`.
 - **Postcondition:** Execution continues at the selected address; memory and
@@ -206,8 +230,10 @@ spreadsheet.
 ### UC-13 — BRANCHZERO (42)
 
 - **Trigger:** Execution reaches BRANCHZERO.
-- **Main flow:** If the accumulator equals zero, replace the instruction counter
-  with the operand address.
+**Main flow:**
+
+1. If the accumulator equals zero, replace the instruction counter with the operand address.
+
 - **Alternate flow:** If the accumulator is positive or negative, keep the
   sequential next address already set by `step()`.
 - **Postcondition:** Execution continues at the selected address; memory and
@@ -217,9 +243,12 @@ spreadsheet.
 
 - **Precondition:** A program has been loaded and the machine is ready to execute.
 - **Trigger:** The CLI calls `run()`.
-- **Main flow:** Repeatedly fetch, decode, and dispatch instructions. On opcode
-  43, set the halted flag and return from the loop. HALT ignores the operand;
-  the sample programs use `+4300`.
+**Main flow:**
+
+1. Repeatedly fetch, decode, and dispatch instructions.
+2. On opcode 43, set the halted flag and return from the loop.
+3. HALT ignores the operand; the sample programs use `+4300`.
+
 - **Alternate/error flow:** A negative instruction, unsupported opcode, counter
   outside 00–99, or handler error stops execution. A program without HALT may
   encounter an error or loop indefinitely; there is no automatic instruction
@@ -235,8 +264,7 @@ behavior. The following details describe the prototype's implementation choices:
 
 - File lines permit surrounding whitespace and blank lines. Console READ uses
   Python integer conversion followed by word-range validation.
-- Fractional division truncates toward zero. Arithmetic overflow and division
-  by zero are errors rather than wraparound or saturation.
+- Fractional division truncates toward zero. Overflow discards higher-order magnitude digits while preserving the sign (12345 becomes 2345; -12345 becomes -2345). Division by zero remains an error.
 - `UVSim.load` validates capacity and numeric range before resetting state.
   A rejected load preserves the previous state.
 - A fetched instruction is recorded in the instruction register even if it is
@@ -262,3 +290,7 @@ Multiply, Divide, Branch, and BranchZero sample programs exercise the remaining
 opcodes; commands and expected outputs are documented in `programs/README.txt`.
 Manual sample checks complement the unit tests and are not additional unit-test
 methods.
+
+## Deferred Milestone 3 work
+
+GUI implementation and recoverable GUI READ/file errors remain future tasks. The current console application still reports errors and exits; these feedback items are not marked complete. The revised PDF uses the separate UC-01 through UC-14 identifiers already used here and in the test register.

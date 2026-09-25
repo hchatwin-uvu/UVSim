@@ -1,6 +1,6 @@
 """BasicML arithmetic handlers; results stay in the accumulator."""
 
-from uvsim import MAX_WORD, MEMORY_SIZE, MIN_WORD, UVSim
+from uvsim import MEMORY_SIZE, UVSim
 
 
 def _operand_value(machine: UVSim, operand: int) -> int:
@@ -10,9 +10,8 @@ def _operand_value(machine: UVSim, operand: int) -> int:
 
 
 def _store_result(machine: UVSim, result: int) -> None:
-    if not MIN_WORD <= result <= MAX_WORD:
-        raise ValueError("Arithmetic result must be between -9999 and 9999.")
-    machine.accumulator = result
+    magnitude = abs(result) % 10000
+    machine.accumulator = -magnitude if result < 0 else magnitude
 
 
 def add(machine: UVSim, operand: int) -> None:
