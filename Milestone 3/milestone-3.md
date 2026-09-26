@@ -79,7 +79,7 @@ Existing task rows have been consolidated into the four packages below; these re
 | M3-01 | Completed non-GUI Milestone 2 corrections: overflow, WRITE formatting, separate use cases, spreadsheet references, and file-path/sample explanations. | Hayden | Completed September 25 | Done | [Change list](feedback-changes.md); 36 automated tests passed. |
 | WP-1 | GUI layout, file loading, and annotated design document; checklist below. | Unassigned | TBD | Not started | — |
 | WP-2 | Execution control, simulator integration, and class definition document; checklist below. | Unassigned | TBD | Not started | — |
-| WP-3 | READ input, WRITE output, and related README instructions; checklist below. | Unassigned | TBD | Not started | — |
+| WP-3 | READ input, WRITE output, and related README instructions; checklist below. | Josh | TBD | Not started | — |
 | WP-4 | New automated tests, integration verification, and final README/fresh-clone check; checklist below. | Unassigned | TBD | Not started | — |
 
 ### WP-1 — GUI layout and file loading
