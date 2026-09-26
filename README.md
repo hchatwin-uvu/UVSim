@@ -1,70 +1,134 @@
 # UVSim
-UVSim BasicML virtual machine simulator for CS 2450.
 
-## Status
-Milestone 2 starter scaffold. The simulator, loader, and opcode handlers are intentionally unimplemented so every teammate can contribute code. This is not the working prototype submission.
+UVSim is a command-line simulator for BasicML programs. It supports all 12
+BasicML operations using a 100-word memory and a separate accumulator.
 
-## Setup and use
-Install Python 3.10 or newer (a project baseline) and Git to clone the repository. No third-party Python packages are required.
+PREREQUISITES
+Install Python 3.10 or newer. No third-party Python packages are required.
+Install Git if cloning. Obtain collaborator access to this private repository.
 
-```text
+GET STARTED
 git clone https://github.com/hchatwin-uvu/UVSim.git
 cd UVSim
 python --version
 python main.py --help
 python main.py
-```
 
-Use `python3` on systems where that is the Python 3 command, or `py -3` on Windows. Run commands from the repository root. The private repository requires collaborator access.
+Use python3 instead of python if your system requires it, or py -3 on Windows.
+Run all commands from the UVSim repository root.
 
-The CLI asks for a BasicML filename; enter `programs/Test1.txt` or pass it directly with `python main.py programs/Test1.txt`. **Currently this reports that loading is not implemented and exits with status 1.** After the team implements the prototype, it must load the file at memory address 00, execute it, and use the console for READ/WRITE. Test1 reads two values and prints their sum; Test2 prints the larger value. Example future checks: inputs 7 and 5 produce 12 for Test1 and 7 for Test2.
+When prompted for the BasicML file, enter:
+programs/Test1.txt
 
-The supplied files contain one signed four-digit word per line. Input formatting, division rounding, overflow handling, and failure behavior still need team decisions; see docs/design.md.
+You may also specify the file directly:
+python main.py programs/Test1.txt
 
-## Structure
-- `main.py`: CLI prompt, orchestration, and user-facing errors.
-- `loader.py`: file parsing and word validation contract.
-- `uvsim.py`: machine state and load/step/run contracts.
-- `operations/`: separate arithmetic, I/O/memory, and control-flow work areas.
-- `tests/`: unit tests grouped by implementation area (to be written).
-- `programs/Test1.txt`, `programs/Test2.txt`: unchanged instructor-provided programs.
-- `docs/design.md`: draft user stories, use-case map, and interface decisions.
-- `docs/milestone-2.md`: rubric checklist and proposed task split.
-- `docs/test-plan.md`: test spreadsheet requirements and coverage plan.
-- `docs/meetings/template.md`: sprint meeting report template.
-- `README.txt`: standalone plain-text launch instructions required by the rubric.
+FILE LOCATIONS AND INCLUDED SAMPLES
+You may use any accessible file path, not only files in programs. Relative
+paths are resolved from the current working directory. Quote paths containing
+spaces when passing them on the command line, for example:
+python main.py "C:\Users\hayde\Downloads\Test1.txt"
+At the interactive filename prompt, enter the path without surrounding quotes.
+Test1.txt and Test2.txt are real sample files included in the repository's
+programs folder when you clone it. Test3, Test3b, and Test4 are also included;
+Test5 is deliberately malformed and should report an error.
 
-## BasicML requirements
-Memory contains 100 signed four-digit words (-9999 through +9999), addressed 00–99, plus a separate accumulator. Programs load at 00. Instruction words are positive: the first two digits are the opcode and the last two are the operand address. Memory may contain instructions, data, or unused words.
+PROGRAM FORMAT
+Use a text file with one signed four-digit decimal word per line, such as
++1007, -0005, or +4300. Files may contain at most 100 words. Blank lines and
+surrounding whitespace are ignored. Words load in order starting at address
+00, and unused memory is initialized to zero.
 
-| Code | Operation | Effect |
-| --- | --- | --- |
-| 10 | READ | Console input to memory |
-| 11 | WRITE | Memory value to console |
-| 20 | LOAD | Memory value to accumulator |
-| 21 | STORE | Accumulator to memory |
-| 30 | ADD | Accumulator + memory |
-| 31 | SUBTRACT | Accumulator - memory |
-| 32 | DIVIDE | Accumulator / memory |
-| 33 | MULTIPLY | Accumulator * memory |
-| 40 | BRANCH | Jump to operand address |
-| 41 | BRANCHNEG | Jump if accumulator < 0 |
-| 42 | BRANCHZERO | Jump if accumulator == 0 |
-| 43 | HALT | Stop execution |
+Instruction words must be positive. The first two digits identify the
+operation; the last two digits specify a memory address from 00 through 99.
+Data words may be positive or negative, from -9999 through 9999.
 
-Arithmetic results remain in the accumulator. All 12 operations must work; the two supplied programs do not cover everything.
+Supported operations:
+10 READ       11 WRITE
+20 LOAD       21 STORE
+30 ADD        31 SUBTRACT    32 DIVIDE    33 MULTIPLY
+40 BRANCH     41 BRANCHNEG  42 BRANCHZERO 43 HALT
 
-## Testing
-Use standard-library unittest:
-```text
-python -m unittest discover -s tests -v
-```
-The initial scaffold contains no unit tests, so this currently discovers zero tests; that is not milestone coverage. Add at least two tests per approved use case (approximately 20–30 total, more as needed), including success and failure/boundary conditions. Record each in the required spreadsheet. See docs/test-plan.md.
+RUNNING A PROGRAM
+When READ displays "Enter a word (-9999 to 9999):", type an integer and press
+Enter. Ordinary integers such as 7 and -5 are accepted; keyboard input does
+not require an explicit plus sign or four digits.
 
-## Team workflow
-Work areas to assign at the meeting (Person 1–4 are unassigned placeholders): Person 1—CLI/loader and memory initialization; Person 2—arithmetic; Person 3—I/O and load/store; Person 4—control flow. The group integrates the execution loop and reviews documentation.
+WRITE prints four zero-padded magnitude digits, with a separate minus sign
+for negative values. For
+example, 12 prints as 0012 and -5 prints as -0005. HALT ends execution.
 
-Branch from updated main, for example `git switch -c feature/arithmetic`. Commit your own code and tests under your own account, push the branch, and open a pull request. Have one teammate review before merging. Keep shared interface changes coordinated through Jira and the sprint meeting.
+Test1 reads two values and prints their sum. Enter 7 and then 5 at the two
+prompts; the expected output is 0012.
 
-## Submission
-Complete the checklist in docs/milestone-2.md. Keep README.txt and these launch instructions synchronized as behavior changes. Verify a fresh clone using only README instructions before submission.
+Test2 reads two values and prints the larger. Enter 7 and then 5; the expected
+output is 0007. Entering 5 and then 7 should also produce 0007.
+Run the second supplied program with:
+python main.py programs/Test2.txt
+
+ERRORS AND EXITING
+File errors, invalid input, invalid instructions, division by zero,
+and execution outside memory stop the program with
+an error message and exit status 1. Successful execution exits with status 0.
+After an error, run the command again to restart the program.
+
+Arithmetic overflow discards higher-order magnitude digits while preserving
+the sign: 12345 becomes 2345 and -12345 becomes -2345. Execution continues.
+READ still rejects values outside -9999 to 9999. Division truncates
+toward zero: -7 divided by 3 produces -2.
+
+Press Ctrl+C to interrupt execution, including a program in an infinite loop.
+There is no automatic instruction limit; interruption may display a Python
+KeyboardInterrupt traceback.
+
+TEST THE PROTOTYPE
+Open a terminal in the UVSim repository folder. Run each command below
+separately and wait for the program's prompts before entering values.
+
+1. Run the addition program:
+   python main.py programs/Test1.txt
+
+   Enter 7 and press Enter.
+   Enter 5 and press Enter.
+   Expected output: 0012
+
+2. Run the larger-number program:
+   python main.py programs/Test2.txt
+
+   Enter 7 and press Enter.
+   Enter 5 and press Enter.
+   Expected output: 0007
+
+   Run the same command again with 5 followed by 7.
+   Expected output: 0007
+
+3. Test the filename prompt:
+   python main.py
+
+   At "BasicML program file:", enter programs/Test1.txt and press Enter.
+   Enter 7, then 5, at the two word prompts, pressing Enter after each.
+   Expected output: 0012
+
+4. Run the existing automated tests:
+   python -m unittest discover -s tests -v
+
+   Expected result: 36 tests run, ending with OK.
+
+If python is unavailable, use python3 or, on Windows, py -3 in these commands.
+
+The current suite contains 36 tests covering loading, arithmetic, and
+control-flow handlers. A successful run ends with OK. Feedback regression checks cover WRITE formatting, instructor program execution,
+and malformed-file rejection. GUI retry behavior remains future work.
+
+The two supplied programs do not exercise every opcode. Additional checks
+are needed for operations such as DIVIDE, MULTIPLY, BRANCH, and BRANCHZERO.
+
+BEFORE SUBMISSION
+Verify the prototype from a fresh clone using these instructions, and check
+test coverage against the requirement for two tests per use case.
+Include the design document (2+ user stories, 10–15 use cases), unit tests,
+test spreadsheet, sprint meeting reports, and source-control contribution
+evidence for all four members. See Milestone 2/milestone-2.md for the checklist.
+
+GUI error reporting and retry without restarting are deferred to the later
+Milestone 3 GUI task. The current application remains console-based.

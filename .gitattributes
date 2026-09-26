@@ -1,0 +1,4 @@
+
+# Preserve submission artifacts as binary files.
+*.pdf binary
+*.xlsx binary

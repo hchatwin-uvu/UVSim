@@ -1,9 +1,8 @@
-# Unit tests to implement
-Use Python unittest and name files test_*.py.
-Suggested files: test_loader.py, test_arithmetic.py, test_io_memory.py,
-test_control_flow.py, and test_execution.py.
+# UVSim tests
 
-Each implementation owner writes tests for their area. Reference the UC IDs
-in docs/design.md. At least two tests are required per use case; exercise
-success, failure, and boundaries as applicable. No placeholder passing or
-skipped tests are included. See docs/test-plan.md.
+Run `python -m unittest discover -s tests -v` from the repository root.
+36 tests cover loading, arithmetic, control flow, instructor programs, WRITE
+formatting, and malformed-file rejection. Use-case IDs match `Milestone 2/design.md`
+and the revised PDF. GUI and retry tests are deferred with GUI implementation.
+
+`test_regression.py` retains the instructor-program, WRITE-formatting, and malformed-file checks for future changes.
