@@ -79,7 +79,6 @@ Existing task rows have been consolidated into the four packages below; these re
 | WP-2 | Execution control, simulator integration, and class definition document; checklist below. | Colton | Not started | — |
 | WP-3 | READ input, WRITE output, and related README instructions; checklist below. | Josh | Not started | — |
 | WP-4 | New automated tests, integration verification, and final README/fresh-clone check; checklist below. | Hunter | Not started | — |
-
 ### WP-1 — GUI layout and file loading
 
 - [ ] Build the main window and controls described above; embed WP-3's panel.
