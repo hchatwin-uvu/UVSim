@@ -1,4 +1,6 @@
-
+"""
+@author Colton Bettinson
+"""
 from uvsim import UVSim, MEMORY_SIZE
 
 """
