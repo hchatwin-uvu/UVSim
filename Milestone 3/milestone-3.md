@@ -1,6 +1,6 @@
 # Milestone 3 plan
 
-Scrum leader: Hayden. Deadline: Friday night, October 2, 2026; confirm the exact time in Canvas. Non-GUI feedback corrections are complete. The toolkit and interfaces below are decisions for upcoming implementation; no GUI code is currently implemented.
+Scrum leader: Hayden. Deadline: Friday night, October 2, 2026
 
 ## Rubric checklist
 
@@ -27,9 +27,9 @@ Milestone 2 received 95/100: design 20/20, application 35/40, unit tests 30/30, 
 - [x] Revise README.txt to explain that files can be opened from any accessible path, not only the programs folder, and that the repository includes sample files users can run. Console explanations are complete; adapting them to the GUI remains part of WP-3/WP-4.
 - [ ] Update affected design descriptions, tests, and documentation together; include verification of retry behavior, WRITE formatting, and positive/negative overflow truncation in the final review.
 
-The checked corrections are implemented locally; GUI recovery remains deferred. Completed work is recorded in [feedback-changes.md](feedback-changes.md). Include them with the Milestone 3 submission for instructor review; no submission has been made.
+Completed work is recorded in [feedback-changes.md](feedback-changes.md).
 
-## Toolkit and interface decision
+## Toolkit and interface
 
 Use **Python Tkinter with ttk widgets**, one main window, and the existing Python simulator. Verify Tkinter availability with `python -m tkinter`; document any platform-specific Tcl/Tk installation requirements in README.txt. Reference: [Python Tkinter documentation](https://docs.python.org/3/library/tkinter.html).
 
@@ -57,16 +57,14 @@ The main window owns a single Tkinter `after()` scheduling loop that calls `tick
 
 ### File ownership and component boundary
 
-| Work package | Working files | Boundary |
+| Work package | Proposed files | Boundary |
 | --- | --- | --- |
 | WP-1: Window and file loading | `gui/app.py`, `gui/__init__.py`, `main.py` | Own the root window, file picker, Run/Stop/status controls, scheduling, and embedding the I/O panel. Call the controller; do not execute opcodes in widgets. |
 | WP-2: Execution integration | `controller.py`, `uvsim.py`, execution-related changes in `operations/io_memory.py` | Own the controller, simulator state transitions, and removal of console coupling. Coordinate edits to the shared I/O module with WP-3. |
 | WP-3: READ/WRITE controls | `gui/io_panel.py`, `input_validation.py`, formatting-related changes in `operations/io_memory.py` | Own input/output widgets, reusable validation, and display formatting. Supply validation to WP-2; do not maintain a second machine state. |
 | WP-4: Automated tests and integration | `tests/test_controller.py`, `tests/test_input_validation.py`, `tests/test_gui_integration.py`, existing regression tests | Own new test code, integration verification, and recorded results. Coordinate fixes in another package's files with its owner. |
 
-Package 3 exposes `IOPanel(parent, on_submit)`, where `on_submit(text) -> bool` passes raw text to the shared controller through the window and returns whether it was accepted. Its `refresh(state, outputs)` method enables/disables input and displays formatted output without duplicating prior lines. Package 1 refreshes the panel and status after controller actions. Package 3 supplies `parse_word(text: str) -> int`, raising ValueError with a user-readable explanation for invalid input; Package 2 calls it before accepting a READ value. This permits widget, controller, and validation work to proceed independently.
-
-Scaffold files for all four packages now exist. They contain ownership notes, interface stubs that raise `NotImplementedError`, and test-case outlines only. No GUI or controller behavior is implemented; `main.py` and the existing simulator remain unchanged. The three new test files contain no executable tests yet and do not increase the existing test count.
+Package 3 exposes `IOPanel(parent, on_submit)`, where `on_submit(text)` passes raw text to the shared controller through the window. Its `refresh(state, outputs)` method enables/disables input and displays formatted output without duplicating prior lines. Package 1 refreshes the panel and status after controller actions. Package 3 supplies `parse_word(text: str) -> int`, raising ValueError with a user-readable explanation for invalid input; Package 2 calls it before accepting a READ value. This permits widget, controller, and validation work to proceed independently.
 
 ## Task tracking — claim work here
 
@@ -74,14 +72,13 @@ Use this document as the task tracker. Claim a work package by replacing Unassig
 
 Existing task rows have been consolidated into the four packages below; these replace the earlier meeting-based assignments. Historical Milestone 2 work remains recorded separately.
 
-| ID | Task | Owner | Due | Status | Evidence / blocker |
-| --- | --- | --- | --- | --- | --- |
-| M3-01 | Completed non-GUI Milestone 2 corrections: overflow, WRITE formatting, separate use cases, spreadsheet references, and file-path/sample explanations. | Hayden | Completed September 25 | Done | [Change list](feedback-changes.md); 36 automated tests passed. |
-| WP-1 | GUI layout, file loading, and annotated design document; checklist below. | Unassigned | TBD | Not started | — |
-| WP-2 | Execution control, simulator integration, and class definition document; checklist below. | Unassigned | TBD | Not started | — |
-| WP-3 | READ input, WRITE output, and related README instructions; checklist below. | Josh | TBD | Not started | — |
-| WP-4 | New automated tests, integration verification, and final README/fresh-clone check; checklist below. | Unassigned | TBD | Not started | — |
-
+| ID | Task | Owner | Status | Evidence / blocker |
+| --- | --- | --- | --- | --- |
+| M3-01 | Completed non-GUI Milestone 2 corrections: overflow, WRITE formatting, separate use cases, spreadsheet references, and file-path/sample explanations. | Hayden | Done | [Change list](feedback-changes.md); 36 automated tests passed. |
+| WP-1 | GUI layout, file loading, and annotated design document; checklist below. | Hayden | Not started | — |
+| WP-2 | Execution control, simulator integration, and class definition document; checklist below. | Colton | Not started | — |
+| WP-3 | READ input, WRITE output, and related README instructions; checklist below. | Josh | Not started | — |
+| WP-4 | New automated tests, integration verification, and final README/fresh-clone check; checklist below. | Hunter | Not started | — |
 ### WP-1 — GUI layout and file loading
 
 - [ ] Build the main window and controls described above; embed WP-3's panel.

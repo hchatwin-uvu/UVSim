@@ -1,5 +1,5 @@
-"""WP-1: Tkinter GUI package for Milestone 3.
+"""Milestone 3 GUI package. Importing it does not create a window.
 
-Scaffold only. Importing this package must not create a window or start execution.
-The existing console entry point remains active until the GUI is integrated.
+WP-1 is implemented; the default console entry point remains available while
+the WP-2 controller and WP-3 I/O panel are being completed.
 """
