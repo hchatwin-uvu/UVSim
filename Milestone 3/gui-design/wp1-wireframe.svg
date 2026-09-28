@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="940" viewBox="0 0 1000 940">
+<style>text{font-family:Arial,sans-serif;fill:#20364a}.title{font-size:24px;font-weight:bold}.body{font-size:16px}.small{font-size:14px}.n{font-size:16px;font-weight:bold;fill:white}.box{fill:white;stroke:#9aaab8;stroke-width:2}</style>
+<rect width="1000" height="940" fill="#f1f5f8"/>
+<text x="30" y="40" class="title">UVSim - WP-1 annotated GUI design</text>
+<text x="30" y="67" class="small">Main window and dialog designs. I/O panel is the planned WP-3 component.</text>
+<rect x="30" y="92" width="570" height="550" rx="8" class="box"/>
+<text x="55" y="125" class="small">UVSim | BasicML simulator</text>
+<text x="55" y="168" class="title">UVSim</text>
+<text x="55" y="195" class="small">Open a BasicML file, then run its instructions.</text>
+<rect x="55" y="218" width="110" height="36" rx="4" class="box"/><text x="75" y="242" class="body">Open file</text>
+<rect x="180" y="218" width="80" height="36" rx="4" class="box"/><text x="204" y="242" class="body">Run</text>
+<rect x="275" y="218" width="80" height="36" rx="4" class="box"/><text x="296" y="242" class="body">Stop</text>
+<text x="55" y="285" class="small">Selected file: programs/Test1.txt</text>
+<rect x="55" y="307" width="515" height="230" fill="#edf4fa" stroke="#879bae" stroke-dasharray="6 4"/>
+<text x="72" y="333" class="body">Program output [WP-3]</text>
+<rect x="72" y="345" width="478" height="100" class="box"/>
+<text x="83" y="370" class="body">0012</text><text x="72" y="473" class="small">READ input (-9999 to 9999)</text>
+<rect x="72" y="483" width="300" height="34" class="box"/><rect x="388" y="483" width="162" height="34" class="box"/>
+<text x="406" y="506" class="body">Submit input</text>
+<line x1="55" y1="562" x2="570" y2="562" stroke="#9aaab8"/>
+<text x="55" y="588" class="body">Status / error message</text>
+<text x="55" y="615" class="small">Invalid input. Please re-enter a value.</text>
+<g fill="#24597d"><circle cx="40" cy="234" r="12"/><circle cx="220" cy="212" r="12"/><circle cx="316" cy="212" r="12"/><circle cx="40" cy="281" r="12"/><circle cx="40" cy="327" r="12"/><circle cx="40" cy="585" r="12"/></g>
+<g class="n"><text x="35" y="240">1</text><text x="215" y="218">2</text><text x="311" y="218">3</text><text x="35" y="287">4</text><text x="35" y="333">5</text><text x="35" y="591">6</text></g>
+<g class="body"><text x="625" y="130">1. Open file</text><text x="625" y="210">2. Run</text><text x="625" y="280">3. Stop</text><text x="625" y="350">4. Selected filename</text><text x="625" y="420">5. I/O panel (WP-3)</text><text x="625" y="530">6. Status and errors</text></g>
+<g class="small"><text x="625" y="154">Native file picker; cancel changes nothing.</text><text x="625" y="175">Disabled while running or awaiting input.</text><text x="625" y="234">Enabled only after a successful load.</text><text x="625" y="304">Abandon the active run or pending READ.</text><text x="625" y="374">Changes only after successful loading.</text><text x="625" y="444">Scroll output; enable input only for READ.</text><text x="625" y="465">Submit/Enter forwards text to controller.</text><text x="625" y="486">Retain rejected input for correction.</text><text x="625" y="554">Persistent, wrapped message in the window.</text><text x="625" y="575">File failure allows another selection.</text><text x="625" y="596">READ failure allows another input attempt.</text></g>
+<rect x="30" y="672" width="455" height="232" rx="6" class="box"/>
+<text x="50" y="702" class="body">Native dialog: Open BasicML program</text><text x="50" y="734" class="small">Folder navigation and file list (platform controls)</text><text x="50" y="769" class="small">Filename: [selected file]</text><text x="50" y="798" class="small">Type: Text files (*.txt) / All files (*.*)</text><text x="50" y="834" class="body">[Open]       [Cancel]</text><text x="50" y="873" class="small">Open loads; Cancel preserves session and output.</text>
+<rect x="510" y="672" width="460" height="232" rx="6" class="box"/>
+<text x="530" y="702" class="body">Temporary screen: Integration pending</text><text x="530" y="739" class="small">Shown while WP-2 / WP-3 are still scaffolds.</text><text x="530" y="770" class="small">Explains missing dependencies and console launch.</text><text x="530" y="811" class="body">[Close]</text><text x="530" y="873" class="small">This screen does not simulate program execution.</text>
+</svg>

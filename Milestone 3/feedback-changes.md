@@ -12,8 +12,7 @@ Non-GUI fixes completed September 25, 2026 for inclusion with Milestone 3. These
 6. **Updated tests and the spreadsheet.** Replaced overflow-error expectations with truncation checks, added three console regression methods, and aligned the PDF and test register to the existing separate Markdown use-case IDs. The suite contains 36 tests. The three console regression checks are retained in `tests/test_regression.py` (renamed from `test_feedback.py`) to catch future regressions in instructor-program output, WRITE formatting, and malformed-file rejection. The spreadsheet source-file references use the new name.
 7. **Added instructor fixtures.** Test3, Test3b, Test4, and Test5 are included unchanged in `programs/`.
 8. **Protected binary deliverables.** Git attributes prevent newline conversion for PDF/XLSX files.
-
-GUI code, the session controller, simulator callbacks, and GUI-specific tests have been removed. Console input validation and error-exit behavior are unchanged. GUI retry/recovery is deferred to the later sprint assignment.
+9. **Implemented WP-1 GUI work.** Main window, file picker, Run/Stop/status controls, and scheduler are implemented in `gui/app.py`. File failures retain the displayed successful path and allow another selection; invalid READ results are passed back to the I/O panel without restarting or reloading. These are WP-1 interface behaviors; end-to-end recovery remains dependent on the unfinished WP-2 controller and WP-3 I/O panel. Permanent GUI testing belongs to WP-4; the temporary WP-1 tests were removed and their scenarios are documented in [the handoff](gui-design/README.md#testing-handoff-to-wp-4).
 
 ## Use-case crosswalk from the old submitted PDF
 
@@ -39,12 +38,3 @@ GUI code, the session controller, simulator callbacks, and GUI-specific tests ha
 - Test3 produced `3333, 3, 3332, 1666, 666, -334`; Test3b produced `3333, 3, 1332, 666, -334, -1334`.
 - Test4 produced `1111, 2222, 3333, 4444, 5555`; Test5 was rejected by the loader.
 - The revised PDF and spreadsheet reflect the console implementation and were rendered for review.
-
-## Deferred to the GUI assignment
-
-- Implement the GUI and its design/class documentation.
-- Report invalid READ input through the GUI and allow retry without losing execution state.
-- Report file errors through the GUI and allow another selection without restarting.
-- Test GUI recovery and usability once those features exist.
-
-The current console application still reports errors and exits. These feedback items are not complete. The SRS documents, meeting reports, final submission checks, and instructor regrade also remain team work.
