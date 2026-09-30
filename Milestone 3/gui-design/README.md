@@ -54,3 +54,22 @@ The existing console suite remains runnable with `python -m unittest discover -s
 For isolated window tests, inject a controller double and `panel_factory` into `UVSimApp`. For real-widget tests, create a Tk root and a panel double that builds within the supplied parent; close the app in cleanup. Mock native file-picker results when appropriate. Test the real WP-2/WP-3 implementations separately and together before marking recovery complete.
 
 Earlier development-only checks used doubles and a hidden Tk window. Those checks are historical, not a retained test suite or proof of integrated simulator behavior. Full GUI testing and final manual usability review remain pending with WP-4.
+
+GUI READ AND WRITE
+
+When a BasicML program reaches a READ instruction, the READ input field becomes
+available. Enter a whole number from -9999 through 9999 and click Submit input
+or press Enter.
+
+If the input is blank, is not a whole number, or is outside the allowed range,
+UVSim displays an error and keeps the current READ request active so the value
+can be corrected and submitted again. Valid input is accepted and the input
+field is cleared.
+
+WRITE instructions display their results in the Program output area in the
+order they are produced. Output values use four-digit formatting, so 12 is
+displayed as 0012 and -5 is displayed as -0005.
+
+The Program output area is read-only and scrollable. Existing output remains
+visible when a program finishes or encounters an error. The output is cleared
+after a new program is successfully loaded.
