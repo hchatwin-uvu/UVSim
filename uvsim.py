@@ -34,7 +34,7 @@ class UVSim:
         for address, word in enumerate(words):
             self.memory[address] = word
 
-    def step(self) -> None:
+    def step(self, *, defer_io: bool = False) -> tuple[str, int] | None:
         """Fetch, decode, and execute one instruction."""
         import sys
 
@@ -81,6 +81,13 @@ class UVSim:
                 f"Invalid opcode {opcode:02d} at address {address:02d}."
             )
 
+        if defer_io and opcode == 10:
+                return ("READ", operand)
+
+        if defer_io and opcode == 11:
+                value = self.memory[operand]
+                self.instruction_counter = address
+                return ("Write", value)
         # Continue forward unless a branch handler changes the destination.
         self.instruction_counter = address + 1
 
