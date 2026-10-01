@@ -87,7 +87,7 @@ class UVSim:
         if defer_io and opcode == 11:
                 value = self.memory[operand]
                 self.instruction_counter = address
-                return ("Write", value)
+                return ("WRITE", value)
         # Continue forward unless a branch handler changes the destination.
         self.instruction_counter = address + 1
 
@@ -98,7 +98,7 @@ class UVSim:
             else:
                 handler(self, operand)
         except (ValueError, EOFError):
-            self.instruction_counter = address
+            self.instruction_counter = address + 1
             raise
 
     def run(self) -> None:

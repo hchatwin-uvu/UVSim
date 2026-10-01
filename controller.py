@@ -90,13 +90,13 @@ class SimulatorController:
 
                 if event is not None:
                     kind, value = event
-                    if event == ["READ", 10]:
+                    if event == "READ":
                         self._pending_read = value
                         self._state = ControllerState.WAITING_INPUT
                         self._message = "Input a word(-9999 to 9999)"
                         return
 
-                    if event == ["WRITE", 11]:
+                    if event == "WRITE":
                         self._outputs.append(value)
                         continue
 
@@ -127,7 +127,7 @@ class SimulatorController:
 
         self.machine.memory[self._pending_read] = value
         self.machine.instruction_counter += 1
-        self.machine._pending_read = None
+        self._pending_read = None
         self._state = ControllerState.RUNNING
         self._message = "Input accepted."
         return True
@@ -137,6 +137,7 @@ class SimulatorController:
     def stop(self) -> None:
         """Stop running/waiting execution, discard pending input, retain output."""
         if self._state in (ControllerState.RUNNING, ControllerState.WAITING_INPUT):
+            self._pending_read = None
             self._state = ControllerState.STOPPED
             self._message = "Program stopped."
 
