@@ -90,13 +90,13 @@ class SimulatorController:
 
                 if event is not None:
                     kind, value = event
-                    if event == "READ":
+                    if kind == "READ":
                         self._pending_read = value
                         self._state = ControllerState.WAITING_INPUT
                         self._message = "Input a word(-9999 to 9999)"
                         return
 
-                    if event == "WRITE":
+                    if kind == "WRITE":
                         self._outputs.append(value)
                         continue
 

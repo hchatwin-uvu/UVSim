@@ -54,7 +54,8 @@ class IOPanel:
         input_frame = ttk.Frame(self.frame)
         input_frame.pack(fill="x", pady=(4, 0))
 
-        self.input_entry = ttk.Entry(input_frame)
+        self.input_text = tk.StringVar(master=parent)
+        self.input_entry = ttk.Entry(input_frame, textvariable=self.input_text)
         self.input_entry.pack(side="left", fill="x", expand=True)
 
         self.submit_button = ttk.Button(
@@ -71,12 +72,16 @@ class IOPanel:
         self.input_entry.configure(state="disabled")
         self.submit_button.configure(state="disabled")
 
-    def _submit(self, event=None) -> None:
+    def _submit(self, event=None) -> str:
         """Send the current READ text to the controller."""
-        raw_text = self.input_entry.get()
+        if self.input_entry.instate(["disabled"]):
+            return "break"
+        raw_text = self.input_text.get()
 
         if self.on_submit(raw_text):
-            self.input_entry.delete(0, tk.END)
+            # The callback refreshes the panel and may disable the entry.
+            self.input_text.set("")
+        return "break"
 
     def refresh(self, state: str, outputs: Sequence[int]) -> None:
         """Enable READ when waiting and display new WRITE output."""
