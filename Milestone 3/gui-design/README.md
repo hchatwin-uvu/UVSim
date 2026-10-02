@@ -1,75 +1,37 @@
-# GUI design and WP-1 handoff
+# GUI design and workflow
 
-Owner: Hayden. Updated September 27, 2026.
+Updated October 2, 2026. The annotated wireframe represents the completed GUI.
 
-![Annotated main window and dialogs](wp1-wireframe.svg)
+![Annotated main window and file picker](wp1-wireframe.svg)
 
-The main window is implemented in `gui/app.py`. The shaded I/O panel is the planned WP-3 component; its controls are illustrated to define placement, not to claim they are implemented. The native file picker varies by operating system. The integration-pending screen is temporary and should be removed from final submission screenshots after WP-2/WP-3 are ready.
+The application has one main window and one native file-picker dialog. Status,
+validation errors, and completion are shown in the main window, not separate
+screens. The native dialog's visual styling varies by operating system.
 
-## Controls and workflow
+1. **Open file:** browse any accessible folder. Open validates and loads; Cancel
+   leaves the session untouched. Disabled during running or pending READ.
+2. **Run:** enabled only after a valid load; execution uses bounded batches on
+   one timer, keeping the window responsive.
+3. **Stop:** abandons execution or a pending READ. Output remains; reload to run again.
+4. **Filename:** last successfully loaded path. Failure preserves that filename.
+5. **Program output:** read-only, vertical scrolling, four-digit magnitudes and
+   separate negative signs. New output is appended once; successful loading clears it.
+6. **READ input / Submit input / Enter:** enabled only while waiting for input.
+   Invalid text remains editable. Accepted input clears and execution continues.
+7. **Status/error area:** explains failure, waiting, running, Stop, and HALT.
+   Retry file selection after load errors; correct text after READ errors.
+8. **Resize and Close:** layout expands; closing cancels the timer and destroys the window.
 
-1. **Open file:** Browse to any accessible file. Text files and all files are available as filters. Cancel changes nothing. Successful loading updates the filename and clears outputs through the controller; failed loading preserves the filename/session and shows the controller's explanation. Select another file to retry.
-2. **Run:** Enabled only in `ready`. Starts execution through the controller. One 20 ms timer calls bounded `tick()` batches; Run never creates another timer.
-3. **Stop:** Enabled while running or waiting for READ input. Delegates to the controller and leaves output visible. Open a file again to begin a new run.
-4. **Selected filename:** Displays only the last successfully loaded path, wrapping with window width.
-5. **Input/output panel:** WP-3 owns its widgets and validation. The window passes `submit_input(text)` and returns the controller's acceptance boolean. Invalid input does not cause the window to reload or restart the program. The panel must retain rejected text, clear accepted text, and avoid duplicate output on refresh.
-6. **Status/error area:** Displays the controller message, including READ errors, file errors, HALT, and runtime errors. Errors are persistent text in the main window, not separate pop-up dialogs. Unexpected boundary errors are shown here and suspend timer execution until a user action.
-7. **Close window:** Cancels the scheduled callback and destroys the window. No execution thread remains.
+## Component relationships
 
-## Package boundaries
+UVSimApp owns the window, one timer, a SimulatorController, and an IOPanel.
+The controller owns UVSim and supplies state/message/output snapshots to the UI.
+IOPanel forwards raw text through the window to the controller's validator.
+Tkinter is confined to gui/. See ../class-definitions.md for method contracts.
 
-- `UVSimApp(root, controller, panel_factory=IOPanel)` composes the window with one shared controller.
-- `load_file(path)` returns the controller's success value and updates the filename only on success.
-- `submit_input(text)` returns False unless the controller is waiting for input; it returns the controller result otherwise.
-- `refresh()` projects controller state/message/outputs into the controls and panel without modifying machine state.
-- WP-3 builds its widgets within the supplied panel parent. The window owns the parent layout, so the panel does not need to expose pack/grid methods.
-- WP-2 must preserve memory and pending READ on validation failure; the GUI cannot guarantee that on its own.
+## Verification
 
-## Current launch and integration status
-
-`python main.py` still runs the console application. `python main.py --gui` invokes the GUI path; an optional file argument is supported. Until WP-2's controller and WP-3's panel are implemented, this shows a clear integration-pending notice instead of claiming a working simulator. Verify Tkinter availability with `python -m tkinter`.
-
-Once the dependencies are implemented, the same launch function composes them automatically. Full GUI file/READ recovery must then be tested with Test1 through Test5 (including Test3b), and the final application launch/documentation can switch to GUI by default during integration.
-
-## Testing handoff to WP-4
-
-WP-4 owns the permanent GUI/controller tests. The temporary WP-1 test file was removed at Hayden's request; do not run `python -m unittest tests.test_gui_app`. No replacement tests have been added by WP-1. Add the agreed coverage in `tests/test_gui_integration.py`, `tests/test_controller.py`, and `tests/test_input_validation.py` as appropriate.
-
-The existing console suite remains runnable with `python -m unittest discover -s tests -q` and currently contains 36 tests. Passing that suite does not verify the GUI.
-
-### Scenarios to implement
-
-- Cancel file selection: filename, status, output, and machine state remain unchanged.
-- Load a valid file, then a missing/unreadable/malformed file: preserve the previous successful filename and machine state, display the error, and allow a subsequent valid selection. Include Test5 followed by Test4.
-- Reject invalid READ input: retain prior inputs, memory, accumulator, and pending instruction. Correct the value, accept it exactly once, and continue without restarting.
-- Check Open/Run/Stop and READ controls in every controller state, including HALT, errors, and Stop while awaiting input.
-- Repeat Run clicks: retain exactly one scheduled execution loop. Closing cancels its callback; no callback accesses a destroyed window.
-- Exercise a looping program: tick batches return control so Stop and window interaction remain responsive.
-- Trigger a boundary exception: show a status message instead of repeatedly executing the failing callback. Verify subsequent recovery.
-- Refresh output repeatedly: no duplicate lines; four-digit formatting is retained; only a successful new load clears output.
-- Verify all six instructor files through the integrated GUI, including overflow and branch outputs.
-
-### Test setup and remaining integration
-
-For isolated window tests, inject a controller double and `panel_factory` into `UVSimApp`. For real-widget tests, create a Tk root and a panel double that builds within the supplied parent; close the app in cleanup. Mock native file-picker results when appropriate. Test the real WP-2/WP-3 implementations separately and together before marking recovery complete.
-
-Earlier development-only checks used doubles and a hidden Tk window. Those checks are historical, not a retained test suite or proof of integrated simulator behavior. Full GUI testing and final manual usability review remain pending with WP-4.
-
-GUI READ AND WRITE
-
-When a BasicML program reaches a READ instruction, the READ input field becomes
-available. Enter a whole number from -9999 through 9999 and click Submit input
-or press Enter.
-
-If the input is blank, is not a whole number, or is outside the allowed range,
-UVSim displays an error and keeps the current READ request active so the value
-can be corrected and submitted again. Valid input is accepted and the input
-field is cleared.
-
-WRITE instructions display their results in the Program output area in the
-order they are produced. Output values use four-digit formatting, so 12 is
-displayed as 0012 and -5 is displayed as -0005.
-
-The Program output area is read-only and scrollable. Existing output remains
-visible when a program finishes or encounters an error. The output is cleared
-after a new program is successfully loaded.
+Permanent tests cover focused controller regressions and isolated window behavior.
+Additional real-widget instructor checks were performed during final verification.
+See ../verification.md and ../../tests/README.md. The GUI requires a working Tk
+display; headless controller tests run without one.

@@ -1,4 +1,4 @@
-"""Command-line entry point; simulator implementation is a team task."""
+"""Launch the GUI by default; retain an explicit console compatibility mode."""
 import argparse
 import sys
 
@@ -9,9 +9,11 @@ from uvsim import UVSim
 def main() -> int:
     parser = argparse.ArgumentParser(description="UVSim BasicML simulator")
     parser.add_argument("file", nargs="?", help="BasicML program file")
-    parser.add_argument("--gui", action="store_true", help="Launch the GUI (requires WP-2 and WP-3)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--gui", action="store_true", help="Launch the GUI (default)")
+    mode.add_argument("--console", action="store_true", help="Run the legacy console interface")
     args = parser.parse_args()
-    if args.gui:
+    if not args.console:
         from gui.app import launch
         launch(args.file)
         return 0
