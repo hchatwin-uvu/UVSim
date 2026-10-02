@@ -1,5 +1,11 @@
 # Milestone 3 plan
 
+> **October 2 status:** The GUI is integrated. This planning checklist is retained
+> as sprint history; old unchecked boxes/scaffold descriptions are not current
+> completion claims. See [submission-checklist.md](submission-checklist.md),
+> [class-definitions.md](class-definitions.md), and [verification.md](verification.md)
+> for final deliverables. Team review and Canvas submission remain.
+
 Scrum leader: Hayden. Deadline: Friday night, October 2, 2026
 
 ## Rubric checklist

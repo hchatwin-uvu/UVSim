@@ -1,5 +1,4 @@
-# Sprint meeting report template
-Copy this file to a dated report after an actual meeting. Do not submit it as a completed report.
+# Sprint meeting report
 
 - Date/time: 9/30 7PM
 - Attendees: Hayden, Josh, Colton, Hunter

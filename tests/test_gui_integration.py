@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 import unittest
 from pathlib import Path
@@ -69,13 +68,15 @@ class FakeController:
         return True
 
 
-@unittest.skipUnless(os.environ.get("DISPLAY"), "Tkinter requires a display")
 class TestGUIIntegration(unittest.TestCase):
     def make_app(self, controller=None):
-        root = tk.Tk()
+        try:
+            root = tk.Tk()
+        except tk.TclError as error:
+            self.skipTest(f"Tk display unavailable: {error}")
         root.withdraw()
         app = UVSimApp(root, controller or FakeController(), panel_factory=FakePanel)
-        self.addCleanup(root.destroy)
+        self.addCleanup(app.close)
         return app
 
     def test_valid_file_load_updates_filename_and_button_state(self):
