@@ -1,11 +1,4 @@
 # Milestone 4 plan
-
-> **Planning draft, October 5, 2026.** Based on the written Milestone 4 assignment
-> and the instructor's Milestone 3 feedback. Owners and the interface
-> choices below are proposals for the team meeting, not recorded commitments.
-> Scaffold files with the signatures below exist; they raise NotImplementedError
-> and are not wired into the application. No Milestone 4 behavior is implemented yet.
-
 Scrum leader: Colton. Deadline: October 23, 2026
 
 ## Rubric checklist
@@ -85,11 +78,11 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 
 | ID | Task | Owner | Status | Evidence / blocker |
 | --- | --- | --- | --- | --- |
-| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Person 1 | Not started | — |
-| WP-2 | Program editor and use cases; checklist below. | Person 2 | Not started | — |
-| WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Person 3 | Not started | — |
-| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Person 4 | Not started | — |
-| M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Not started | — |
+| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Not started | — |
+| WP-2 | Program editor and use cases; checklist below. | Josh | Not started | — |
+| WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started | — |
+| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Not started | — |
+| M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Started | — |
 | M4-SUB | Final rubric check and Canvas submission. | Colton | Not started | — |
 
 ### WP-1 — Color scheme, window layout, and verification
