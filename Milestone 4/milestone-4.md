@@ -5,7 +5,7 @@ Scrum leader: Colton. Deadline: October 23, 2026
 
 - [ ] Revisions to previous milestone (10 points): complete every item in the TODO section below and resubmit the affected code and documents.
 - [ ] New design modifications (50 points): implement the four client requests.
-  - [ ] Color scheme: UVU default (primary `#4C721D`, off-color `#FFFFFF`), configurable by the user without recompiling or reinstalling. Text must be readable with the default scheme.
+  - [ ] Color scheme: UVU default (primary `#4C721D`, off-color `#FFFFFF`), configurable by the user without recompiling or reinstalling. Text must be readable with the default scheme. Colors are loaded from a configuration file, and the user changes them by editing that file.
   - [ ] Program editing: load a file into the GUI, then view, add, modify, and delete function codes and data values before execution, including cut, copy, and paste. Handle edits that would exceed 100 entries (addresses 00–99).
   - [ ] Load from any folder: the user can open a file from any directory.
   - [ ] Save: the user can save the current program, optionally under a different name, to a directory they choose.
@@ -26,7 +26,7 @@ Instructor feedback items, each mapped to the work package that owns it. Record 
 ### Architecture
 
 - [ ] **TODO-4 Separate file loading from `SimulatorController`.** Proper N-tier design: the controller and CPU code should not care whether a program came from a file, a database, or the editor, and should not need to change if the source changes. — WP-3 (data layer), WP-4 (controller side)
-- [ ] **TODO-5 Memory register / word class.** Consider replacing bare integers with a class that encapsulates the word format and exposes function code, address, and raw value, so a format change (for example, swapping which digits are the function code) stays inside one class. — WP-4
+- [ ] **TODO-5 Memory register / word class.** Replace bare integers with a class that encapsulates the word format and exposes function code, address, and raw value, so a format change (for example, swapping which digits are the function code) stays inside one class. The team decided on October 10 to do this as described in the feedback: `Word` is adopted for memory cells and file parsing. — WP-4
 
 ## Current state
 
@@ -50,6 +50,8 @@ Three tiers, with Tkinter confined to `gui/`:
 
 Workflow: Open reads a file through the program store and places the words in the editor. The editor is the single copy of the program the user sees. Run takes the editor's current words, hands them to the controller, and starts execution, so running again needs no reload. Save and Save As write the editor's words back through the program store.
 
+Color configuration: the color scheme is loaded from a configuration file at startup. The user changes the colors by editing that file; no source change or reinstall is needed.
+
 Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), Selected File Name, status message, READ input, then the program editor beside the program output.
 
 ### Interface contracts
@@ -61,29 +63,18 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 | WP-3 | `ProgramStore` in `program_store.py` | `load(path) -> list[Word]` with today's validation and line-numbered errors. `save(path, words) -> None` writes one formatted word per line. Both raise OSError or ValueError; a failed save must not leave a partly written file in place of the original. |
 | WP-3 | `FileActions` in `gui/file_actions.py` | Owns the Open, Save, and Save As commands and their dialogs. Any directory can be chosen. Tracks the current path and reports it for the Selected File Name field. Save with no current path behaves as Save As. Warns before discarding unsaved edits. |
 | WP-2 | `EditorPanel(parent, on_change)` in `gui/editor_panel.py` | `set_words(words)`, `get_words() -> list[Word]` (ValueError naming the offending line), `is_dirty`, `mark_saved()`, `set_enabled(bool)`. Shows the address 00–99 beside each entry. Supports add, modify, delete, cut, copy, paste. Read-only while a program is running or waiting for input. |
-| WP-1 | `Theme(primary, off_color)` and `load_theme(path) -> Theme` in `theme_config.py` | Hex colors. Missing file, missing key, or an invalid value falls back to the UVU defaults without crashing. `gui/theme.py` applies a Theme to the window and to the panels the other packages supply. |
-
-### Decisions to confirm
-
-| Topic | Proposal |
-| --- | --- |
-| More than 100 entries | Reject the add or paste that would exceed 100, leave the program unchanged, and explain in the status area. Never truncate silently. |
-| Color configuration | A text configuration file at the repository root, read at startup, with hex values. An in-app color picker that writes the same file is optional if time allows. |
-| Running an edited program | Run always uses the editor's current contents, saved or not. Invalid entries block Run with a message naming the line. |
-| Word class scope | Adopt `Word` for memory cells and file parsing (TODO-5). If the team decides against it, record the reasoning in the meeting report. |
-| Where updated documents live | Copy each updated design document into this folder and leave the Milestone 2 and 3 versions as history. |
-| Console mode | Keep `--console` working on the new store and word class, or retire it. |
+| WP-1 | `Theme(primary, off_color)` and `load_theme(path) -> Theme` in `theme_config.py` | Hex colors, loaded from the configuration file that the user edits to change the scheme. Missing file, missing key, or an invalid value falls back to the UVU defaults without crashing. `gui/theme.py` applies a Theme to the window and to the panels the other packages supply. |
 
 ## Task tracking
 
-| ID | Task | Owner | Status | Evidence / blocker |
-| --- | --- | --- | --- | --- |
-| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Not started | — |
-| WP-2 | Program editor and use cases; checklist below. | Josh | Not started | — |
-| WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started | — |
-| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Not started | — |
-| M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Started | — |
-| M4-SUB | Final rubric check and Canvas submission. | Colton | Not started | — |
+| ID | Task | Owner | Status |
+| --- | --- | --- | --- |
+| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Not started |
+| WP-2 | Program editor and use cases; checklist below. | Josh | Not started |
+| WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started |
+| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Not started |
+| M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Started |
+| M4-SUB | Final rubric check and Canvas submission. | Colton | Not started |
 
 ### WP-1 — Color scheme, window layout, and verification
 
