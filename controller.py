@@ -65,6 +65,16 @@ class SimulatorController:
 
         return True
 
+    def load_program(self, words) -> bool:
+        """WP-4 scaffold (Milestone 4): replaces load_file; not implemented.
+
+        Accept list[Word] from any source, validating before replacing state.
+        Reject empty programs, more than 100 words, and loads while running or
+        waiting for input. On success reset machine and outputs, enter ready.
+        Callable from every inactive state so Run can repeat without a reload.
+        """
+        raise NotImplementedError("WP-4: SimulatorController.load_program")
+
     def start(self) -> None:
         """Enter running only from ready; leave other states unchanged."""
         if self._state == ControllerState.READY:
