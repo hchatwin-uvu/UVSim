@@ -9,6 +9,8 @@ Milestone 3/milestone-3.md. Coordinate READ/WRITE changes in
 operations/io_memory.py with WP-3. No execution behavior is implemented here.
 """
 from uvsim import UVSim
+from word import Word
+from collections.abc import Iterable
 from enum import Enum, auto
 import input_validation
 import loader
@@ -37,6 +39,7 @@ class SimulatorController:
 
     def load_file(self, path: str) -> bool:
         """Validate before replacing state; report failure without a partial load."""
+        #TODO: Find where load_file is used and replace with load_program
         if self._state in (
                 ControllerState.RUNNING,
                 ControllerState.WAITING_INPUT
@@ -65,15 +68,46 @@ class SimulatorController:
 
         return True
 
-    def load_program(self, words) -> bool:
-        """WP-4 scaffold (Milestone 4): replaces load_file; not implemented.
+    def load_program(self, words: Iterable[Word]) -> bool:
+        """Replaces load_file (Milestone 4).
 
         Accept list[Word] from any source, validating before replacing state.
         Reject empty programs, more than 100 words, and loads while running or
         waiting for input. On success reset machine and outputs, enter ready.
         Callable from every inactive state so Run can repeat without a reload.
         """
-        raise NotImplementedError("WP-4: SimulatorController.load_program")
+        if self._state in (
+                ControllerState.RUNNING,
+                ControllerState.WAITING_INPUT
+        ):
+            self._message = "Stop the current program before loading another."
+            return False
+
+        words = list(words)
+        for word in words:
+            if not isinstance(word, Word):
+                raise TypeError(
+                    f"load_program expects Word objects, not {type(word).__name__}."
+                )
+
+        try:
+            if not words:
+                raise ValueError("Program is empty.")
+            replacement = UVSim()
+            replacement.load([word.value for word in words])
+
+        except ValueError as error:
+            self._message = str(error)
+            return False
+
+        #replace the machine only after the program validated
+        self.machine = replacement
+        self._outputs = []
+        self._pending_read = None
+        self._state = ControllerState.READY
+        self._message = "Program loaded successfully."
+
+        return True
 
     def start(self) -> None:
         """Enter running only from ready; leave other states unchanged."""
