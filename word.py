@@ -1,8 +1,7 @@
-"""WP-4: BasicML word scaffold; the only module that knows the digit layout.
+"""WP-4: BasicML word; the only module that knows the digit layout.
 
-Implement the contract defined in Milestone 4/milestone-4.md. WP-2 and WP-3
-depend on parse() and format(), so deliver this first. No behavior is
-implemented here.
+Implements the contract defined in Milestone 4/milestone-4.md. WP-2 and WP-3
+depend on parse() and format().
 """
 
 MIN_WORD = -9999
@@ -13,8 +12,16 @@ class Word:
     """One signed four-digit memory word."""
 
     def __init__(self, value: int) -> None:
-        """Store value; raise ValueError outside MIN_WORD..MAX_WORD."""
-        raise NotImplementedError("WP-4: Word.__init__")
+        """Store value; raise ValueError outside MIN_WORD,MAX_WORD."""
+
+        # A BasicML word can only be from -9999 to +9999
+        if value < MIN_WORD or value > MAX_WORD:
+            raise ValueError(
+                f"Word out of range: {value} "
+                f"(must be {MIN_WORD} to {MAX_WORD})."
+            )
+
+        self._value = value
 
     @classmethod
     def parse(cls, text: str) -> "Word":
@@ -22,23 +29,38 @@ class Word:
 
         Raise ValueError with a user-readable explanation for anything else.
         """
-        raise NotImplementedError("WP-4: Word.parse")
+
+        word = text.strip()
+
+        # BasicML words must be signed and exactly four digits
+        if len(word) != 5 or word[0] not in "+-" or not word[1:].isdigit():
+            raise ValueError(
+                f"Invalid BasicML word '{word}': expected a sign (+ or -) "
+                "followed by four digits, such as +1007."
+            )
+
+        return cls(int(word))
 
     @property
     def value(self) -> int:
-        """Raw signed integer."""
-        raise NotImplementedError("WP-4: Word.value")
+        return self._value
 
     @property
     def opcode(self) -> int:
         """Function code, currently the first two digits."""
-        raise NotImplementedError("WP-4: Word.opcode")
+        return abs(self._value) // 100
 
     @property
     def operand(self) -> int:
         """Memory address 00-99, currently the last two digits."""
-        raise NotImplementedError("WP-4: Word.operand")
+        return abs(self._value) % 100
 
     def format(self) -> str:
         """Return the file format: sign plus four digits, e.g. +1007."""
-        raise NotImplementedError("WP-4: Word.format")
+
+        # + forces the sign, 05 pads to five characters with zeros
+        return f"{self._value:+05d}"
+
+    def __eq__(self, other) -> bool:
+        """Two words are equal when they hold the same value."""
+        return isinstance(other, Word) and self._value == other._value

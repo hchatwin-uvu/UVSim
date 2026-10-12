@@ -72,7 +72,7 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 | WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Not started |
 | WP-2 | Program editor and use cases; checklist below. | Josh | Not started |
 | WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started |
-| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Not started |
+| WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Started |
 | M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Started |
 | M4-SUB | Final rubric check and Canvas submission. | Colton | Not started |
 
@@ -118,7 +118,7 @@ Files: `program_store.py` (replaces `loader.py`), `gui/file_actions.py`, `main.p
 
 Files: `word.py`, `uvsim.py`, `controller.py`, `operations/`, `input_validation.py`, `tests/test_word.py`, `tests/test_controller.py`, existing core tests.
 
-- [ ] Implement `Word` and deliver it first; WP-2 and WP-3 both depend on `Word.parse` and `format` (TODO-5).
+- [x] Implement `Word` and deliver it first; WP-2 and WP-3 both depend on `Word.parse` and `format` (TODO-5).
 - [ ] Convert `UVSim` memory and instruction decoding to use `Word`; adapt the operation handlers while preserving overflow truncation, WRITE formatting, and all 12 opcodes.
 - [ ] Replace `load_file` with `load_program(words)` and remove the loader import from the controller (TODO-4).
 - [ ] Allow a new run from `halted`, `stopped`, and `error` without rereading the file; each run starts from a reset machine and cleared output (TODO-1).
