@@ -45,6 +45,12 @@ class FakeController:
         self._outputs = []
         return True
 
+    def load_program(self, words):
+        self.state = "ready"
+        self.message = "Program loaded successfully."
+        self._outputs = []
+        return True
+
     def start(self):
         if self.state == "ready":
             self.state = "running"
@@ -132,12 +138,86 @@ class TestGUIIntegration(unittest.TestCase):
         app._filename = "existing.txt"
         app.filename.set("existing.txt")
 
-        result = app.load_file("bad.txt")
+        with patch("gui.app.load_program", side_effect=ValueError("Malformed program")):
+            result = app.load_file("bad.txt")
 
         self.assertFalse(result)
         self.assertEqual(app._filename, "existing.txt")
         self.assertEqual(app.filename.get(), "existing.txt")
         self.assertEqual(app.status.get(), "Unable to complete operation: Malformed program")
+
+
+class TestRealWindow(unittest.TestCase):
+    def setUp(self):
+        from controller import SimulatorController
+        try:
+            self.root = tk.Tk()
+        except tk.TclError as error:
+            self.skipTest(str(error))
+        self.root.withdraw()
+        self.app = UVSimApp(self.root, SimulatorController())
+        self.addCleanup(self.app.close)
+
+    def run_to_end(self, inputs):
+        values = iter(inputs)
+        self.app.start()
+        for _ in range(1000):
+            if self.app.controller.state == "waiting_input":
+                self.app.submit_input(str(next(values)))
+            elif self.app.controller.state == "running":
+                self.app.controller.tick()
+                self.app.refresh()
+            else:
+                break
+        self.assertEqual(self.app.controller.state, "halted")
+        return self.app.panel.output.get("1.0", "end-1c").splitlines()
+
+    def test_instructor_files_and_repeat_without_disk_access(self):
+        cases = [
+            ("Test1.txt", [7, 5], [12]),
+            ("Test2.txt", [7, 5], [7]),
+            ("Test3.txt", [], [3333, 3, 3332, 1666, 666, -334]),
+            ("Test3b.txt", [], [3333, 3, 1332, 666, -334, -1334]),
+            ("Test4.txt", [], [1111, 2222, 3333, 4444, 5555]),
+        ]
+        for name, inputs, expected in cases:
+            with self.subTest(name=name):
+                self.assertTrue(self.app.load_file(ROOT / "programs" / name))
+                self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
+                self.assertFalse(self.app.run_button.instate(["disabled"]))
+                with patch("gui.app.load_program", side_effect=AssertionError("Reread disk")):
+                    self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
+        previous = self.app.filename.get()
+        self.assertFalse(self.app.load_file(ROOT / "programs/Test5.txt"))
+        self.assertEqual(self.app.filename.get(), previous)
+
+    def test_layout_and_filename_label(self):
+        self.root.deiconify()
+        self.root.update()
+        self.root.update_idletasks()
+        self.assertEqual(self.app.filename_heading.cget("text"), "Selected File Name")
+        status_y = self.app.status_label.winfo_rooty()
+        input_y = self.app.panel.input_entry.winfo_rooty()
+        output_y = self.app.panel.output.winfo_rooty()
+        self.assertLess(status_y, input_y)
+        self.assertLess(input_y, output_y)
+        self.assertGreater(self.app.panel.output.winfo_height(), 50)
+
+    def test_rerun_after_stop_and_runtime_error(self):
+        self.app.load_file(ROOT / "programs/Test1.txt")
+        self.app.start()
+        self.app.controller.tick()
+        self.app.refresh()
+        self.app.stop()
+        self.assertFalse(self.app.run_button.instate(["disabled"]))
+        self.assertEqual(list(map(int, self.run_to_end([2, 3]))), [5])
+        self.app.start()
+        self.app.controller.machine.memory[0] = 9900
+        self.app.controller.tick()
+        self.app.refresh()
+        self.assertEqual(self.app.controller.state, "error")
+        self.assertFalse(self.app.run_button.instate(["disabled"]))
+        self.assertEqual(list(map(int, self.run_to_end([4, 5]))), [9])
 
 
 if __name__ == "__main__":

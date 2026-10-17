@@ -1,4 +1,4 @@
-UVSim - Milestone 3
+UVSim - Milestone 4 (WP-1)
 
 INSTALLATION
 Requires Python 3.10 or newer with Tcl/Tk (tkinter). No pip packages are needed.
@@ -20,33 +20,42 @@ Optional: load a program immediately:
   python main.py programs/Test1.txt
 The explicit python main.py --gui form also works. A desktop display is required.
 A legacy terminal mode remains available with --console for compatibility; use
-the default GUI for Milestone 3 grading and normal operation.
+the default GUI for grading and normal operation.
 
 CONTROLS AND WORKFLOW
-1. Open file: opens the native file picker. Navigate to any accessible folder,
-   select a BasicML text file, then choose Open. Text files and All files filters
-   are available. Cancel preserves the existing session. Loading does not run it.
-2. Selected filename: shows the last successfully loaded path. Failed loading
-   leaves the previous filename, program, and output intact.
-3. Run: enabled after successful loading. Starts executing the loaded program.
-   Open file and Run are disabled during execution or while awaiting READ input.
-4. READ input (-9999 to 9999): enabled only when the program requests input.
-   Enter an integer such as 7, +7, or -5; an explicit sign or four digits is not
-   required for interactive input.
-5. Submit input / Enter: submits the value once. Accepted input clears and the
-   program continues. Invalid input stays visible; correct it and submit again.
-6. Program output: read-only, scrollable WRITE results in execution order.
-   Four magnitude digits are shown: 12 becomes 0012 and -5 becomes -0005.
-   Output remains after HALT, Stop, or an execution error. A successful new load
-   clears it. Use the vertical scrollbar to review earlier results.
-7. Stop: abandons a running program or pending READ and retains output. Reload a
-   file to begin another run; Stop does not provide pause/resume.
-8. Status/error area: shows loading, running, input requests, completion, Stop,
-   and error messages. File errors allow another selection. READ errors allow
-   correction without losing earlier inputs. Runtime errors stop execution;
-   open a valid program to recover without restarting the application.
-9. Window resize/close: resize normally; controls expand with the window. Close
-   using the title-bar close control. Closing cancels scheduled execution.
+1. Open file: browse any accessible folder and select a BasicML text file.
+   Cancel preserves the session. A failed load preserves the previous program.
+2. Run: execute the loaded program from the beginning. After HALT, Stop, or an
+   error, click Run again without reopening the file. Each run resets memory,
+   CPU state, pending input, and output using the original loaded program.
+   Open file and Run are disabled while running or waiting for READ input.
+3. Stop: abandon execution or a pending READ; retain output. This is not pause.
+4. Selected File Name: displays the last successfully loaded path.
+5. Status/error area: above READ and output; shows loading, execution, input
+   requests, completion, and errors. Correct invalid READ input and retry.
+6. READ input (-9999 to 9999): enabled only when input is requested. Enter an
+   integer such as 7, +7, or -5; four digits and an explicit sign are not required.
+   Submit input or Enter sends it once. Accepted input clears; invalid input
+   remains available for correction without losing prior execution state.
+7. Program output: read-only scrollable WRITE results. Four magnitude digits
+   are shown: 12 becomes 0012 and -5 becomes -0005. HALT, Stop, and errors retain
+   output; loading or starting a fresh run clears it.
+8. Resize/close: controls expand with the window. Closing cancels execution.
+
+COLOR CONFIGURATION
+Edit theme.ini beside main.py, save the file, and restart UVSim:
+  [theme]
+  primary = #4C721D
+  off_color = #FFFFFF
+Both colors must use # followed by six hexadecimal digits (0-9, A-F).
+Primary colors the header, buttons, separators, and selections; off_color colors
+surfaces and button/header text. Body text stays dark. These defaults are the
+supplied UVU green and white. No reinstall or compilation is needed.
+The file is located beside the application even when launched from another
+working directory. Missing/unreadable files, malformed INI, missing keys, or
+invalid colors restore the entire UVU default palette without crashing.
+Native file dialogs keep operating-system styling. Custom contrast is the
+user's choice. Editor and Save controls await the other work packages.
 
 BASICML FILE FORMAT
 One signed four-digit word per line, e.g. +1007, -0005, +4300. Maximum 100 words.
@@ -78,9 +87,9 @@ TESTS
   python -m unittest discover -s tests -v
 GUI tests create hidden real Tk windows. They skip only if Tk cannot initialize;
 skips mean GUI behavior was not verified on that machine. See tests/README.md
-and Milestone 3/verification.md for coverage and recorded results.
+and Milestone 4/verification.md for coverage and recorded results.
 
 SUBMISSION CONTENTS
-See Milestone 3/submission-checklist.md for the deliverable index. Include source,
-program samples, tests, revised Milestone 2 documents, the annotated GUI design,
-class definitions, all seven SRS documents, this README.txt, and sprint reports.
+See Milestone 4/milestone-4.md for the team plan and outstanding integration.
+Milestone 4/gui-design/README.md describes the implemented WP-1 interface.
+Editor/save integration and final full-milestone verification are still pending.
