@@ -69,7 +69,7 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 
 | ID | Task | Owner | Status |
 | --- | --- | --- | --- |
-| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Not started |
+| WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Implemented available WP-1 work; editor/file integration pending |
 | WP-2 | Program editor and use cases; checklist below. | Josh | Not started |
 | WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started |
 | WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Started |
@@ -152,3 +152,18 @@ Every document from earlier milestones must match the finished application. One 
 | Class definitions and diagram | `Milestone 3/class-definitions.md` | WP-4 | `Word`, `ProgramStore`, `EditorPanel`, `FileActions`, `Theme`; changed controller and UVSim. |
 | README.txt and README.md | Repository root | WP-1 | Controls in on-screen order, editing, saving, color configuration. |
 | tests/README.md | `tests/` | WP-4 | New test counts and coverage summary. |
+
+## WP-1 implementation update — October 16
+
+Implemented on `feature/milestone-4-branding`, based on updated main `46630b5`:
+UVU default branding, root-level theme.ini configuration, fallback validation,
+Selected File Name label, status/READ above output, and Run-again integration
+with the available load_program controller. README, current annotated wireframe,
+configuration tests, and real-window regression coverage are included.
+
+See [verification.md](verification.md), [feedback-changes.md](feedback-changes.md),
+and [GUI design](gui-design/README.md). EditorPanel, ProgramStore, and FileActions
+remain placeholders on this base. Embedding them, Save toolbar buttons, edited
+source execution, edit/save/reopen acceptance, and fresh-clone final verification
+remain pending their owners' implementation. Do not mark the entire WP-1 package
+or final milestone verification complete until those integration checks pass.
