@@ -1,5 +1,4 @@
-UVSim - Milestone 4 (WP-2 program editor documentation)
-UVSim - Milestone 4 (WP-1)
+UVSim - Milestone 4 (WP-1 and WP-2 program documentation)
 
 INSTALLATION
 Requires Python 3.10 or newer with Tcl/Tk (tkinter). No pip packages are needed.
@@ -21,32 +20,6 @@ Optional: load a program immediately:
   python main.py programs/Test1.txt
 The explicit python main.py --gui form also works. A desktop display is required.
 A legacy terminal mode remains available with --console for compatibility; use
-the default GUI for normal operation.
-
-CONTROLS AND WORKFLOW
-1. Open file: opens the native file picker. Navigate to any accessible folder,
-   select a BasicML text file, then choose Open. Text files and All files filters
-   are available. Cancel preserves the existing session. Loading does not run it.
-2. Selected filename: shows the last successfully loaded path. Failed loading
-   leaves the previous filename, program, and output intact.
-3. Run: enabled after successful loading. Starts executing the loaded program.
-   Open file and Run are disabled during execution or while awaiting READ input.
-4. READ input (-9999 to 9999): enabled only when the program requests input.
-   Enter an integer such as 7, +7, or -5; an explicit sign or four digits is not
-   required for interactive input.
-5. Submit input / Enter: submits the value once. Accepted input clears and the
-   program continues. Invalid input stays visible; correct it and submit again.
-6. Program output: read-only, scrollable WRITE results in execution order.
-   Four magnitude digits are shown: 12 becomes 0012 and -5 becomes -0005.
-   Output remains after HALT, Stop, or an execution error. A successful new load
-   clears it. Use the vertical scrollbar to review earlier results.
-7. Stop: abandons a running program or pending READ and retains output. Stop
-   does not provide pause/resume.
-8. Status/error area: shows loading, running, input requests, completion, Stop,
-   and error messages. File errors allow another selection. READ errors allow
-   correction without losing earlier inputs. Runtime errors stop execution.
-9. Window resize/close: resize normally; controls expand with the window. Close
-   using the title-bar close control. Closing cancels scheduled execution.
 the default GUI for grading and normal operation.
 
 CONTROLS AND WORKFLOW
@@ -160,13 +133,6 @@ GUI tests create hidden real Tk windows. They skip only if Tk cannot initialize;
 skips mean GUI behavior was not verified on that machine. See tests/README.md
 and Milestone 4/verification.md for coverage and recorded results.
 
-SUBMISSION CONTENTS AND INTEGRATION NOTE
-See Milestone 4/milestone-4.md for the team checklist and document ownership.
-This README includes WP-2 editor instructions. Before final Milestone 4
-submission, WP-1 should update the controls above to match the integrated
-on-screen order and add finalized Open, Save, Save As, run-again, and theme
-configuration instructions from WP-3 and WP-4. The completed workflow must
-be verified against the integrated GUI before these sections are final.
 SUBMISSION CONTENTS
 See Milestone 4/milestone-4.md for the team plan and outstanding integration.
 Milestone 4/gui-design/README.md describes the implemented WP-1 interface.
