@@ -70,7 +70,7 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 | ID | Task | Owner | Status |
 | --- | --- | --- | --- |
 | WP-1 | Color scheme, window layout, wireframe, README, and final verification; checklist below. | Hayden | Implemented available WP-1 work; editor/file integration pending |
-| WP-2 | Program editor and use cases; checklist below. | Josh | Not started |
+| WP-2 | Program editor and use cases; checklist below. | Josh | Started |
 | WP-3 | Open/save, data layer, requirements, and test spreadsheet; checklist below. | Hunter | Not started |
 | WP-4 | Word class, controller re-run, and class diagrams; checklist below. | Colton | Started |
 | M4-LOG | Real sprint meeting reports, at least one per week. | Colton | Started |
@@ -80,12 +80,12 @@ Proposed window order, top to bottom: toolbar (Open, Save, Save As, Run, Stop), 
 
 Files: `gui/app.py`, `gui/theme.py`, `theme_config.py`, the configuration file, layout of `gui/io_panel.py`, `tests/test_theme.py`, `tests/test_gui_integration.py`.
 
-- [ ] Implement `Theme` and `load_theme` with UVU defaults and fallback on a missing or invalid file.
-- [ ] Apply the primary and off-color across the window; confirm text is readable with the default scheme.
-- [ ] Ship a default configuration file and make a user's change take effect on restart without touching source code.
-- [ ] Rebuild the layout in the proposed order, adding the Selected File Name label (TODO-3) and moving status and READ input above the output (TODO-2).
+- [x] Implement `Theme` and `load_theme` with UVU defaults and fallback on a missing or invalid file.
+- [x] Apply the primary and off-color across the window; confirm text is readable with the default scheme.
+- [x] Ship a default configuration file and make a user's change take effect on restart without touching source code.
+- [x] Rebuild the layout in the proposed order, adding the Selected File Name label (TODO-3) and moving status and READ input above the output (TODO-2).
 - [ ] Embed WP-2's editor panel and WP-3's file actions in the window; enable and disable toolbar buttons by controller state, including Run after halt, stop, or error (TODO-1).
-- [ ] Tests: default theme, valid custom theme, missing file, invalid color value; update the existing GUI integration tests for the new layout, label, and Run-again button states.
+- [x] Tests: default theme, valid custom theme, missing file, invalid color value; update the existing GUI integration tests for the new layout, label, and Run-again button states.
 - [ ] Documents: update the annotated wireframe and GUI design description; keep the README.txt controls section in on-screen order as the layout changes, add color configuration instructions, and assemble the other packages' README contributions. Supply the color scheme use case to WP-2 and the color scheme requirements to WP-3.
 - [ ] Verification: run all six instructor files through the finished GUI, plus an edit → save → reopen → run pass and a custom color scheme pass; record actual results in `verification.md` and completed feedback items in `feedback-changes.md`; check a fresh clone using README.txt alone.
 
@@ -93,14 +93,14 @@ Files: `gui/app.py`, `gui/theme.py`, `theme_config.py`, the configuration file, 
 
 Files: `gui/editor_panel.py`, `tests/test_editor.py`.
 
-- [ ] Display the loaded program with one entry per address, 00–99.
-- [ ] Add, modify, and delete entries; later entries shift so addresses stay consecutive.
-- [ ] Cut, copy, and paste, single and multiple entries, through the keyboard shortcuts and visible controls or a menu.
-- [ ] Enforce the 100-entry limit, including multi-line paste.
-- [ ] Validate entries with `Word.parse`; mark or report the offending line instead of failing silently.
-- [ ] Track unsaved changes and expose them to WP-3; become read-only during execution.
-- [ ] Tests: set/get round trip, each edit operation, paste at and over the limit, invalid entry reporting, read-only state.
-- [ ] Documents: add use cases for view, add, modify, delete, cut/copy/paste, and the over-limit case; revise existing use cases (UC-01, UC-02, UC-14) that the new load → edit → run flow changes. Supply README text for the editor.
+- [x] Display the loaded program with one entry per address, 00–99.
+- [x] Add, modify, and delete entries; later entries shift so addresses stay consecutive.
+- [x] Cut, copy, and paste, single and multiple entries, through the keyboard shortcuts and visible controls or a menu.
+- [x] Enforce the 100-entry limit, including multi-line paste.
+- [x] Validate entries with `Word.parse`; mark or report the offending line instead of failing silently.
+- [x] Track unsaved changes and expose them to WP-3; become read-only during execution.
+- [x] Tests: set/get round trip, each edit operation, paste at and over the limit, invalid entry reporting, read-only state.
+- [x] Documents: add use cases for view, add, modify, delete, cut/copy/paste, and the over-limit case; revise existing use cases (UC-01, UC-02, UC-14) that the new load → edit → run flow changes. Supply README text for the editor.
 
 ### WP-3 — Open, save, and the data layer
 
