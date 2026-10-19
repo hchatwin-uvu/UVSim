@@ -19,6 +19,33 @@ class IOPanel:
         self.frame = ttk.Frame(parent)
         self.frame.pack(fill="both", expand=True)
 
+        # READ input
+        ttk.Label(
+            self.frame,
+            text="READ input (-9999 to 9999)"
+        ).pack(anchor="w")
+
+        input_frame = ttk.Frame(self.frame)
+        input_frame.pack(fill="x", pady=(4, 12))
+
+        self.input_text = tk.StringVar(master=parent)
+        self.input_entry = ttk.Entry(input_frame, textvariable=self.input_text)
+        self.input_entry.pack(side="left", fill="x", expand=True)
+
+        self.submit_button = ttk.Button(
+            input_frame,
+            text="Submit input",
+            command=self._submit
+        )
+        self.submit_button.pack(side="left", padx=(8, 0))
+
+        # Pressing Enter does the same thing as clicking Submit.
+        self.input_entry.bind("<Return>", self._submit)
+
+        # READ starts disabled until the controller requests input.
+        self.input_entry.configure(state="disabled")
+        self.submit_button.configure(state="disabled")
+
         # WRITE output
         ttk.Label(
             self.frame,
@@ -45,33 +72,6 @@ class IOPanel:
 
         self.output.configure(yscrollcommand=scrollbar.set)
 
-        # READ input
-        ttk.Label(
-            self.frame,
-            text="READ input (-9999 to 9999)"
-        ).pack(anchor="w")
-
-        input_frame = ttk.Frame(self.frame)
-        input_frame.pack(fill="x", pady=(4, 0))
-
-        self.input_text = tk.StringVar(master=parent)
-        self.input_entry = ttk.Entry(input_frame, textvariable=self.input_text)
-        self.input_entry.pack(side="left", fill="x", expand=True)
-
-        self.submit_button = ttk.Button(
-            input_frame,
-            text="Submit input",
-            command=self._submit
-        )
-        self.submit_button.pack(side="left", padx=(8, 0))
-
-        # Pressing Enter does the same thing as clicking Submit.
-        self.input_entry.bind("<Return>", self._submit)
-
-        # READ starts disabled until the controller requests input.
-        self.input_entry.configure(state="disabled")
-        self.submit_button.configure(state="disabled")
-
     def _submit(self, event=None) -> str:
         """Send the current READ text to the controller."""
         if self.input_entry.instate(["disabled"]):
@@ -87,6 +87,8 @@ class IOPanel:
         """Enable READ when waiting and display new WRITE output."""
 
         waiting = state == "waiting_input"
+        if state == "ready":
+            self.input_text.set("")
 
         self.input_entry.configure(
             state="normal" if waiting else "disabled"

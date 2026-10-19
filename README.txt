@@ -1,4 +1,5 @@
 UVSim - Milestone 4 (WP-2 program editor documentation)
+UVSim - Milestone 4 (WP-1)
 
 INSTALLATION
 Requires Python 3.10 or newer with Tcl/Tk (tkinter). No pip packages are needed.
@@ -46,6 +47,42 @@ CONTROLS AND WORKFLOW
    correction without losing earlier inputs. Runtime errors stop execution.
 9. Window resize/close: resize normally; controls expand with the window. Close
    using the title-bar close control. Closing cancels scheduled execution.
+the default GUI for grading and normal operation.
+
+CONTROLS AND WORKFLOW
+1. Open file: browse any accessible folder and select a BasicML text file.
+   Cancel preserves the session. A failed load preserves the previous program.
+2. Run: execute the loaded program from the beginning. After HALT, Stop, or an
+   error, click Run again without reopening the file. Each run resets memory,
+   CPU state, pending input, and output using the original loaded program.
+   Open file and Run are disabled while running or waiting for READ input.
+3. Stop: abandon execution or a pending READ; retain output. This is not pause.
+4. Selected File Name: displays the last successfully loaded path.
+5. Status/error area: above READ and output; shows loading, execution, input
+   requests, completion, and errors. Correct invalid READ input and retry.
+6. READ input (-9999 to 9999): enabled only when input is requested. Enter an
+   integer such as 7, +7, or -5; four digits and an explicit sign are not required.
+   Submit input or Enter sends it once. Accepted input clears; invalid input
+   remains available for correction without losing prior execution state.
+7. Program output: read-only scrollable WRITE results. Four magnitude digits
+   are shown: 12 becomes 0012 and -5 becomes -0005. HALT, Stop, and errors retain
+   output; loading or starting a fresh run clears it.
+8. Resize/close: controls expand with the window. Closing cancels execution.
+
+COLOR CONFIGURATION
+Edit theme.ini beside main.py, save the file, and restart UVSim:
+  [theme]
+  primary = #4C721D
+  off_color = #FFFFFF
+Both colors must use # followed by six hexadecimal digits (0-9, A-F).
+Primary colors the header, buttons, separators, and selections; off_color colors
+surfaces and button/header text. Body text stays dark. These defaults are the
+supplied UVU green and white. No reinstall or compilation is needed.
+The file is located beside the application even when launched from another
+working directory. Missing/unreadable files, malformed INI, missing keys, or
+invalid colors restore the entire UVU default palette without crashing.
+Native file dialogs keep operating-system styling. Custom contrast is the
+user's choice. Editor and Save controls await the other work packages.
 
 PROGRAM EDITOR (MILESTONE 4 WP-2)
 The program editor displays one BasicML instruction or data value per row, with
@@ -121,7 +158,7 @@ To run the WP-2 editor tests separately:
   python -m unittest tests.test_editor -v
 GUI tests create hidden real Tk windows. They skip only if Tk cannot initialize;
 skips mean GUI behavior was not verified on that machine. See tests/README.md
-and Milestone 3/verification.md for coverage and recorded results.
+and Milestone 4/verification.md for coverage and recorded results.
 
 SUBMISSION CONTENTS AND INTEGRATION NOTE
 See Milestone 4/milestone-4.md for the team checklist and document ownership.
@@ -130,3 +167,7 @@ submission, WP-1 should update the controls above to match the integrated
 on-screen order and add finalized Open, Save, Save As, run-again, and theme
 configuration instructions from WP-3 and WP-4. The completed workflow must
 be verified against the integrated GUI before these sections are final.
+SUBMISSION CONTENTS
+See Milestone 4/milestone-4.md for the team plan and outstanding integration.
+Milestone 4/gui-design/README.md describes the implemented WP-1 interface.
+Editor/save integration and final full-milestone verification are still pending.

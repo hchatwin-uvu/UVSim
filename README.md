@@ -16,3 +16,14 @@ error recovery, sample outputs, and test instructions.
 - [Verification](Milestone%203/verification.md)
 
 Run tests with `python -m unittest discover -s tests -v`.
+
+## Milestone 4 WP-1
+
+The interface starts with UVU green (`#4C721D`) and white (`#FFFFFF`). Edit
+[theme.ini](theme.ini) and restart to change both colors. Missing or invalid
+configuration restores UVU defaults. Run again after HALT, Stop, or an error
+without reopening the file.
+
+- [Current GUI design](Milestone%204/gui-design/README.md)
+- [WP-1 verification and pending integration](Milestone%204/verification.md)
+- [Milestone 4 plan](Milestone%204/milestone-4.md)
