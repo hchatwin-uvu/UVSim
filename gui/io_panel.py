@@ -10,7 +10,7 @@ from operations.io_memory import format_word
 class IOPanel:
     """Embeddable input/output component owned by WP-3."""
 
-    def __init__(self, parent, on_submit: Callable[[str], bool]) -> None:
+    def __init__(self, parent, on_submit: Callable[[str], bool], output_parent=None) -> None:
         """Build the READ/WRITE widgets."""
         self.on_submit = on_submit
         self._displayed_count = 0
@@ -47,12 +47,13 @@ class IOPanel:
         self.submit_button.configure(state="disabled")
 
         # WRITE output
+        output_parent = self.frame if output_parent is None else output_parent
         ttk.Label(
-            self.frame,
+            output_parent,
             text="Program output"
         ).pack(anchor="w")
 
-        output_frame = ttk.Frame(self.frame)
+        output_frame = ttk.Frame(output_parent)
         output_frame.pack(fill="both", expand=True, pady=(4, 12))
 
         self.output = tk.Text(

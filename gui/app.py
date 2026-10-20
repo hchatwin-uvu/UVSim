@@ -1,8 +1,9 @@
 """WP-1: Tkinter window composed against the shared controller contract."""
 import tkinter as tk
-from tkinter import filedialog, ttk
+from tkinter import filedialog, messagebox, ttk
 from controller import SimulatorController
 from gui.io_panel import IOPanel
+from gui.editor_panel import EditorPanel
 from gui.theme import apply_theme
 from theme_config import load_theme
 from loader import load_program
@@ -22,11 +23,10 @@ class UVSimApp:
         self._closed = False
         self._local_error = None
         self._filename = "No program selected"
-        self._program_words = None
         self.theme = theme if theme is not None else load_theme()
         root.title("UVSim | BasicML simulator")
-        root.geometry("780x600")
-        root.minsize(600, 480)
+        root.geometry("1100x720")
+        root.minsize(1000, 620)
         root.protocol("WM_DELETE_WINDOW", self.close)
         frame = ttk.Frame(root, padding=20)
         frame.pack(fill="both", expand=True)
@@ -52,8 +52,18 @@ class UVSimApp:
         self.status_label = ttk.Label(frame, textvariable=self.status, wraplength=700)
         self.status_label.pack(fill="x", pady=(0, 12))
         panel_parent = ttk.Frame(frame)
-        panel_parent.pack(fill="both", expand=True)
-        self.panel = panel_factory(panel_parent, self.submit_input)
+        panel_parent.pack(fill="x")
+        workspace = ttk.Frame(frame)
+        workspace.pack(fill="both", expand=True)
+        workspace.columnconfigure(0, weight=1, uniform="panels")
+        workspace.columnconfigure(1, weight=1, uniform="panels")
+        workspace.rowconfigure(0, weight=1)
+        editor_parent = ttk.Frame(workspace, padding=(0, 0, 12, 0))
+        editor_parent.grid(row=0, column=0, sticky="nsew")
+        output_parent = ttk.Frame(workspace)
+        output_parent.grid(row=0, column=1, sticky="nsew")
+        self.editor = EditorPanel(editor_parent, self._editor_changed)
+        self.panel = panel_factory(panel_parent, self.submit_input, output_parent=output_parent)
         apply_theme(root, self.theme)
         frame.bind("<Configure>", self._resize_labels)
         self.refresh()
@@ -106,8 +116,10 @@ class UVSimApp:
         # Replace this file boundary with WP-3's FileActions when available.
         def load():
             words = [Word(value) for value in load_program(path)]
+            if not self.confirm_discard():
+                return False
             if self.controller.load_program(words):
-                self._program_words = words
+                self.editor.set_words(words)
                 return True
             return False
         accepted = self._invoke(load)
@@ -117,16 +129,28 @@ class UVSimApp:
         return bool(accepted)
 
     def start(self):
-        if self.controller.state in ("ready", "halted", "stopped", "error"):
-            if self._program_words is not None:
-                if not self._invoke(self.controller.load_program, self._program_words):
-                    self.refresh()
-                    return
-                self.panel.refresh(self.controller.state, self.controller.outputs)
-            elif self.controller.state != "ready":
+        if self.controller.state not in ("running", "waiting_input"):
+            def prepare():
+                return self.controller.load_program(self.editor.get_words())
+            if not self._invoke(prepare):
+                self.refresh()
                 return
+            self.panel.refresh(self.controller.state, self.controller.outputs)
             self._invoke(self.controller.start)
             self.refresh()
+
+    def _editor_changed(self):
+        """Keep stale execution errors from hiding the editor's current feedback."""
+        self._local_error = None
+        self.status.set("Program edited. Run uses the current editor contents.")
+
+    def confirm_discard(self):
+        """Temporary discard guard until WP-3 supplies save-aware FileActions."""
+        return not self.editor.is_dirty or messagebox.askyesno(
+            "Discard unsaved edits?",
+            "The program has unsaved edits. Saving is not available yet.\n"
+            "Discard these edits and continue?",
+            parent=self.root, default="no")
 
     def stop(self):
         if self.controller.state in ("running", "waiting_input"):
@@ -144,15 +168,18 @@ class UVSimApp:
         state = self.controller.state
         active = state in ("running", "waiting_input")
         self.open_button.configure(state="disabled" if active else "normal")
-        can_run = state == "ready" or (not active and self._program_words is not None)
+        can_run = not active
         self.run_button.configure(state="normal" if can_run else "disabled")
         self.stop_button.configure(state="normal" if active else "disabled")
+        self.editor.set_enabled(not active)
         self.filename.set(self._filename)
         self.status.set(self._local_error or self.controller.message)
         self.panel.refresh(state, self.controller.outputs)
 
     def close(self):
         if self._closed:
+            return
+        if not self.confirm_discard():
             return
         self._closed = True
         if self._timer is not None:
@@ -162,20 +189,9 @@ class UVSimApp:
 
 
 def launch(path=None):
-    """Launch the GUI, showing an explicit notice for unfinished dependencies."""
+    """Launch the editor, simulator controls, and configured branding."""
     root = tk.Tk()
-    try:
-        app = UVSimApp(root, SimulatorController())
-    except NotImplementedError:
-        for widget in root.winfo_children():
-            widget.destroy()
-        root.title("UVSim | Integration pending")
-        frame = ttk.Frame(root, padding=24)
-        frame.pack(fill="both", expand=True)
-        ttk.Label(frame, text="GUI integration is not ready", font=("Segoe UI", 16, "bold")).pack(anchor="w")
-        ttk.Label(frame, text="WP-1 is implemented. WP-2's controller and WP-3's I/O panel must be implemented before programs can run here. The console application remains available with python main.py.", wraplength=480).pack(pady=16)
-        ttk.Button(frame, text="Close", command=root.destroy).pack(anchor="e")
-    else:
-        if path:
-            app.load_file(path)
+    app = UVSimApp(root, SimulatorController())
+    if path:
+        app.load_file(path)
     root.mainloop()

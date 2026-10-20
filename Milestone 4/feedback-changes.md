@@ -11,3 +11,11 @@ October 16, 2026, feature/milestone-4-branding.
 
 Editor/FileActions integration and the team's architecture work remain separate
 pending tasks. See verification.md for tested scope and remaining checks.
+
+## October 20 integration
+
+The editor is embedded beside output with shared READ controls above both.
+Run now uses current editor contents, replacing the temporary original-source
+cache. A fresh run preserves edited source and clears execution state/output.
+Open/Close protect unsaved edits with a temporary discard confirmation until
+save-aware FileActions is available. README and the current wireframe are updated.

@@ -27,3 +27,8 @@ without reopening the file.
 - [Current GUI design](Milestone%204/gui-design/README.md)
 - [WP-1 verification and pending integration](Milestone%204/verification.md)
 - [Milestone 4 plan](Milestone%204/milestone-4.md)
+
+The program editor is now integrated beside output. Run uses current editor
+contents, including unsaved changes, and locks editing until execution stops.
+Open/Close confirm before discarding edits. Save/Save As and loading malformed
+files for correction still await the file-handling work package.
