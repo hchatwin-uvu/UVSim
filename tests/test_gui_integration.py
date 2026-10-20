@@ -30,23 +30,15 @@ class FakeController:
         self.state = state
         self.message = message
         self._outputs = list(outputs or [])
-        self.loaded_paths = []
+        self.loaded_programs = []
         self.last_input = None
 
     @property
     def outputs(self):
         return list(self._outputs)
 
-    def load_file(self, path):
-        self.loaded_paths.append(path)
-        if path.endswith("bad.txt"):
-            raise ValueError("Malformed program")
-        self.state = "ready"
-        self.message = "Program loaded successfully."
-        self._outputs = []
-        return True
-
     def load_program(self, words):
+        self.loaded_programs.append(list(words))
         self.state = "ready"
         self.message = "Program loaded successfully."
         self._outputs = []
@@ -104,7 +96,7 @@ class TestGUIIntegration(unittest.TestCase):
         with patch("gui.app.filedialog.askopenfilename", return_value=""):
             app.open_file()
 
-        self.assertEqual(controller.loaded_paths, [])
+        self.assertEqual(controller.loaded_programs, [])
         self.assertEqual(app.filename.get(), "No program selected")
 
     def test_start_and_stop_transition_the_ui_state(self):

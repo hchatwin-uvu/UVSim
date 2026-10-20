@@ -2,6 +2,7 @@
 from pathlib import Path
 import unittest
 from controller import SimulatorController
+from loader import load_program
 from word import Word
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +16,12 @@ class ControllerTests(unittest.TestCase):
         self.c = SimulatorController()
 
     def load(self, name):
-        return self.c.load_file(str(ROOT / 'programs' / name))
+        # Files are read outside the controller, as the GUI does (TODO-4)
+        try:
+            values = load_program(str(ROOT / 'programs' / name))
+        except (OSError, ValueError):
+            return False
+        return self.c.load_program([Word(value) for value in values])
 
     def run_to_end(self):
         self.c.start(); self.c.tick()
