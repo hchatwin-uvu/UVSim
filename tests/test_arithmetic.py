@@ -4,6 +4,7 @@ import unittest
 
 from operations.arithmetic import ARITHMETIC_HANDLERS, add, divide, multiply, subtract
 from uvsim import MAX_WORD, MIN_WORD, UVSim
+from word import Word
 
 
 class ArithmeticTests(unittest.TestCase):
@@ -13,37 +14,37 @@ class ArithmeticTests(unittest.TestCase):
 
     def test_add_positive(self) -> None:
         self.machine.accumulator = 7
-        self.machine.memory[self.operand] = 5
+        self.machine.memory[self.operand] = Word(5)
         add(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 12)
 
     def test_add_negative(self) -> None:
         self.machine.accumulator = 7
-        self.machine.memory[self.operand] = -10
+        self.machine.memory[self.operand] = Word(-10)
         add(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, -3)
 
     def test_subtract_positive(self) -> None:
         self.machine.accumulator = 12
-        self.machine.memory[self.operand] = 5
+        self.machine.memory[self.operand] = Word(5)
         subtract(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 7)
 
     def test_subtract_negative_result(self) -> None:
         self.machine.accumulator = 5
-        self.machine.memory[self.operand] = 12
+        self.machine.memory[self.operand] = Word(12)
         subtract(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, -7)
 
     def test_subtract_negative_value(self) -> None:
         self.machine.accumulator = 5
-        self.machine.memory[self.operand] = -12
+        self.machine.memory[self.operand] = Word(-12)
         subtract(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 17)
 
     def test_divide_exact(self) -> None:
         self.machine.accumulator = 12
-        self.machine.memory[self.operand] = 3
+        self.machine.memory[self.operand] = Word(3)
         divide(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 4)
 
@@ -54,33 +55,33 @@ class ArithmeticTests(unittest.TestCase):
         ):
             with self.subTest(dividend=dividend, divisor=divisor):
                 self.machine.accumulator = dividend
-                self.machine.memory[self.operand] = divisor
+                self.machine.memory[self.operand] = Word(divisor)
                 divide(self.machine, self.operand)
                 self.assertEqual(self.machine.accumulator, expected)
                 self.assertIsInstance(self.machine.accumulator, int)
 
     def test_divide_by_zero_preserves_accumulator(self) -> None:
         self.machine.accumulator = 12
-        self.machine.memory[self.operand] = 0
+        self.machine.memory[self.operand] = Word(0)
         with self.assertRaisesRegex(ValueError, "divide by zero"):
             divide(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 12)
 
     def test_multiply_positive(self) -> None:
         self.machine.accumulator = 7
-        self.machine.memory[self.operand] = 5
+        self.machine.memory[self.operand] = Word(5)
         multiply(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 35)
 
     def test_multiply_zero(self) -> None:
         self.machine.accumulator = 7
-        self.machine.memory[self.operand] = 0
+        self.machine.memory[self.operand] = Word(0)
         multiply(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, 0)
 
     def test_multiply_negative(self) -> None:
         self.machine.accumulator = 7
-        self.machine.memory[self.operand] = -5
+        self.machine.memory[self.operand] = Word(-5)
         multiply(self.machine, self.operand)
         self.assertEqual(self.machine.accumulator, -35)
 
@@ -94,7 +95,7 @@ class ArithmeticTests(unittest.TestCase):
         ):
             with self.subTest(handler=handler.__name__, accumulator=accumulator):
                 self.machine.accumulator = accumulator
-                self.machine.memory[self.operand] = value
+                self.machine.memory[self.operand] = Word(value)
                 handler(self.machine, self.operand)
                 self.assertEqual(self.machine.accumulator, expected)
 
@@ -103,7 +104,7 @@ class ArithmeticTests(unittest.TestCase):
             for limit in (MIN_WORD, MAX_WORD):
                 with self.subTest(handler=handler.__name__, limit=limit):
                     self.machine.accumulator = limit
-                    self.machine.memory[self.operand] = value
+                    self.machine.memory[self.operand] = Word(value)
                     handler(self.machine, self.operand)
                     self.assertEqual(self.machine.accumulator, limit)
 
@@ -121,12 +122,12 @@ class ArithmeticTests(unittest.TestCase):
             for address in (0, 99):
                 with self.subTest(opcode=opcode, address=address):
                     self.machine.accumulator = 12
-                    self.machine.memory[address] = 3
+                    self.machine.memory[address] = Word(3)
                     memory_before = self.machine.memory.copy()
                     self.machine.instruction_counter = 8
-                    self.machine.instruction_register = opcode * 100 + address
+                    self.machine.instruction_register = Word(opcode * 100 + address)
                     instruction = self.machine.instruction_register
-                    ARITHMETIC_HANDLERS[instruction // 100](self.machine, instruction % 100)
+                    ARITHMETIC_HANDLERS[instruction.opcode](self.machine, instruction.operand)
                     self.assertEqual(self.machine.accumulator, expected)
                     self.assertEqual(self.machine.memory, memory_before)
                     self.assertEqual(self.machine.instruction_counter, 8)

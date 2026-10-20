@@ -53,7 +53,7 @@ class SimulatorController:
             if not words:
                     raise ValueError("Program file is empty.")
             replacement = UVSim()
-            replacement.load(words)
+            replacement.load([Word(value) for value in words])
 
         except (OSError, ValueError) as error:
             self._message = str(error)
@@ -94,7 +94,7 @@ class SimulatorController:
             if not words:
                 raise ValueError("Program is empty.")
             replacement = UVSim()
-            replacement.load([word.value for word in words])
+            replacement.load(words)
 
         except ValueError as error:
             self._message = str(error)
@@ -169,7 +169,7 @@ class SimulatorController:
             self._message = str(error)
             return False
 
-        self.machine.memory[self._pending_read] = value
+        self.machine.memory[self._pending_read] = Word(value)
         self.machine.instruction_counter += 1
         self._pending_read = None
         self._state = ControllerState.RUNNING

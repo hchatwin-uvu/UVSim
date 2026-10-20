@@ -56,7 +56,7 @@ class ControllerTests(unittest.TestCase):
 
     def test_loop_is_bounded_and_can_stop(self):
         self.load('Test1.txt')
-        self.c.machine.load([4000])
+        self.c.machine.load(LOOP_PROGRAM)
         self.c.start(); self.c.tick(3)
         self.assertEqual(self.c.state, 'running')
         self.c.stop()
@@ -65,7 +65,7 @@ class ControllerTests(unittest.TestCase):
     def test_load_from_empty_enters_ready(self):
         self.assertTrue(self.c.load_program(WRITE_PROGRAM))
         self.assertEqual(self.c.state, 'ready')
-        self.assertEqual(self.c.machine.memory[:4], [1103, 4300, 0, 1234])
+        self.assertEqual(self.c.machine.memory[:4], WRITE_PROGRAM)
         self.assertEqual(self.c.outputs, [])
 
     def test_loaded_program_runs(self):
@@ -101,7 +101,7 @@ class ControllerTests(unittest.TestCase):
         self.c.start(); self.c.tick(3)
         self.assertFalse(self.c.load_program(WRITE_PROGRAM))
         self.assertEqual(self.c.state, 'running')
-        self.assertEqual(self.c.machine.memory[0], 4000)
+        self.assertEqual(self.c.machine.memory[0], Word(4000))
         self.c.stop()
 
         self.c.load_program(READ_PROGRAM)

@@ -119,7 +119,7 @@ Files: `program_store.py` (replaces `loader.py`), `gui/file_actions.py`, `main.p
 Files: `word.py`, `uvsim.py`, `controller.py`, `operations/`, `input_validation.py`, `tests/test_word.py`, `tests/test_controller.py`, existing core tests.
 
 - [x] Implement `Word` and deliver it first; WP-2 and WP-3 both depend on `Word.parse` and `format` (TODO-5).
-- [ ] Convert `UVSim` memory and instruction decoding to use `Word`; adapt the operation handlers while preserving overflow truncation, WRITE formatting, and all 12 opcodes.
+- [x] Convert `UVSim` memory and instruction decoding to use `Word`; adapt the operation handlers while preserving overflow truncation, WRITE formatting, and all 12 opcodes.
 - [ ] Replace `load_file` with `load_program(words)` and remove the loader import from the controller (TODO-4).
 - [ ] Allow a new run from `halted`, `stopped`, and `error` without rereading the file; each run starts from a reset machine and cleared output (TODO-1).
 - [ ] Tests: word range, parse, format, opcode/operand; load from each inactive state; run twice with identical results; rejected load while running. Update the existing core, controller, and regression tests to the new interfaces without weakening what they assert; WP-1 and WP-3 update the GUI integration and loader tests.

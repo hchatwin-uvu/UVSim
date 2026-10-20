@@ -8,6 +8,7 @@ from unittest.mock import patch
 from loader import load_program
 from operations.io_memory import format_word
 from uvsim import UVSim
+from word import Word
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class FeedbackTests(unittest.TestCase):
     def run_program(self, name, inputs=()):
         machine = UVSim()
-        machine.load(load_program(ROOT / "programs" / name))
+        machine.load([Word(value) for value in load_program(ROOT / "programs" / name)])
         output = io.StringIO()
         with patch("sys.stdin", io.StringIO("\n".join(map(str, inputs)) + "\n")), redirect_stdout(output):
             for _ in range(10000):

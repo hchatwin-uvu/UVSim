@@ -4,6 +4,7 @@ import sys
 
 from loader import load_program
 from uvsim import UVSim
+from word import Word
 
 
 def main() -> int:
@@ -22,7 +23,7 @@ def main() -> int:
         if not path:
             raise ValueError("A program filename is required.")
         machine = UVSim()
-        machine.load(load_program(path))
+        machine.load([Word(value) for value in load_program(path)])
         machine.run()
     except (OSError, ValueError, NotImplementedError, EOFError) as error:
         print(f"UVSim: {error}", file=sys.stderr)

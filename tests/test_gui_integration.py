@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from gui.app import UVSimApp
+from word import Word
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -212,7 +213,7 @@ class TestRealWindow(unittest.TestCase):
         self.assertFalse(self.app.run_button.instate(["disabled"]))
         self.assertEqual(list(map(int, self.run_to_end([2, 3]))), [5])
         self.app.start()
-        self.app.controller.machine.memory[0] = 9900
+        self.app.controller.machine.memory[0] = Word(9900)
         self.app.controller.tick()
         self.app.refresh()
         self.assertEqual(self.app.controller.state, "error")
