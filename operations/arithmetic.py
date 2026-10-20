@@ -6,7 +6,7 @@ from uvsim import MEMORY_SIZE, UVSim
 def _operand_value(machine: UVSim, operand: int) -> int:
     if not 0 <= operand < MEMORY_SIZE:
         raise ValueError("Arithmetic operand address must be between 00 and 99.")
-    return machine.memory[operand]
+    return machine.memory[operand].value
 
 
 def _store_result(machine: UVSim, result: int) -> None:
