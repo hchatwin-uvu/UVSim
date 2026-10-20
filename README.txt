@@ -27,7 +27,8 @@ CONTROLS AND WORKFLOW
    Cancel preserves the session. A failed load preserves the previous program.
 2. Run: execute the loaded program from the beginning. After HALT, Stop, or an
    error, click Run again without reopening the file. Each run resets memory,
-   CPU state, pending input, and output using the original loaded program.
+   CPU state, pending input, and output using current editor contents.
+   Unsaved edits run too; invalid or empty programs show an error without running.
    Open file and Run are disabled while running or waiting for READ input.
 3. Stop: abandon execution or a pending READ; retain output. This is not pause.
 4. Selected File Name: displays the last successfully loaded path.
@@ -37,10 +38,12 @@ CONTROLS AND WORKFLOW
    integer such as 7, +7, or -5; four digits and an explicit sign are not required.
    Submit input or Enter sends it once. Accepted input clears; invalid input
    remains available for correction without losing prior execution state.
-7. Program output: read-only scrollable WRITE results. Four magnitude digits
+7. Program editor (left): edit instructions/data using the controls below.
+   Editing is disabled during execution and READ waits; Copy stays available.
+8. Program output (right): read-only scrollable WRITE results. Four magnitude digits
    are shown: 12 becomes 0012 and -5 becomes -0005. HALT, Stop, and errors retain
    output; loading or starting a fresh run clears it.
-8. Resize/close: controls expand with the window. Closing cancels execution.
+9. Resize/close: controls expand with the window. Closing cancels execution.
 
 COLOR CONFIGURATION
 Edit theme.ini beside main.py, save the file, and restart UVSim:
@@ -55,13 +58,12 @@ The file is located beside the application even when launched from another
 working directory. Missing/unreadable files, malformed INI, missing keys, or
 invalid colors restore the entire UVU default palette without crashing.
 Native file dialogs keep operating-system styling. Custom contrast is the
-user's choice. Editor and Save controls await the other work packages.
+user's choice. Save/Save As controls await WP-3.
 
 PROGRAM EDITOR (MILESTONE 4 WP-2)
 The program editor displays one BasicML instruction or data value per row, with
 its address in the range 00-99. The editor supports up to 100 entries. The
-editor component is implemented in gui/editor_panel.py; displaying it in the
-main application requires WP-1 GUI integration.
+editor is integrated beside output below the shared READ input controls.
 
 Editor buttons:
   Add: Insert +0000 before the first selected row, or at the end if no row is
@@ -92,12 +94,13 @@ If an Add or Paste operation would exceed 100 entries, the operation is rejected
 without changing the program. Invalid clipboard words are also rejected without
 changing the program. Cut, Copy, Paste, and Delete support multiple selections.
 
-The editor tracks changes since the last load or successful save. The
-application can use this status to prompt before discarding unsaved changes.
+The editor tracks changes since loading. Open and Close ask before discarding
+unsaved edits; No preserves them. Saving is not yet implemented. Canceling the
+file picker or failing to load a file preserves edits without discarding them.
 While a program is running or waiting for READ input, modifying the editor is
-disabled; Copy remains available. The intended Milestone 4 workflow runs the
-current valid editor words and allows rerunning without reopening the file.
-This requires the remaining controller and GUI integration work.
+disabled; Copy remains available. Run validates the current editor words and
+starts fresh without reopening the file. Execution never changes editor source.
+You may also build a program with Add before opening any file.
 
 BASICML FILE FORMAT
 One signed four-digit word per line, e.g. +1007, -0005, +4300. Maximum 100 words.
@@ -136,4 +139,4 @@ and Milestone 4/verification.md for coverage and recorded results.
 SUBMISSION CONTENTS
 See Milestone 4/milestone-4.md for the team plan and outstanding integration.
 Milestone 4/gui-design/README.md describes the implemented WP-1 interface.
-Editor/save integration and final full-milestone verification are still pending.
+Save integration and final full-milestone verification are still pending.

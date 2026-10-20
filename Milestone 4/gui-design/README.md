@@ -28,16 +28,30 @@ The default file path is absolute and relative to the module, independent of cwd
 widgets. Call it after embedding new panels; new ttk widgets inherit styles.
 `UVSimApp(..., theme=None)` loads configuration unless a Theme is supplied.
 
-Until WP-2/WP-3 are implemented, the window loads through the existing loader
-and keeps original Word values separate from execution memory. On Run it calls
-`controller.load_program` then `start`; output refresh occurs between reset and
-execution. This temporary source cache must be replaced with `editor.get_words()`
-when integrating the editor so unsaved edits become the source of each run.
+## Editor integration — October 20, 2026
 
-Final layout will insert Save and Save As after Open, and place the editor beside
-output below status and READ. Do not invoke the existing placeholder constructors
-until their owners implement them. Route Open/Save and close confirmation through
-FileActions, then reapply the theme to the assembled widget tree.
+The window is 1100x720 by default with a 1000x620 minimum. Status and shared READ
+controls appear above a two-column workspace: editor on the left, output on the
+right. Both columns expand together. The theme is applied after both panels exist.
+`IOPanel(parent, on_submit, output_parent=None)` optionally places output under a
+separate parent while retaining the original combined layout for other callers.
+
+`UVSimApp.editor` owns the displayed source. Open fills it with validated words;
+Run commits an in-progress edit via get_words(), validates, calls load_program(),
+clears visible output, and starts execution. No cached source copy remains in the
+window. Invalid/empty source never starts a previous program. New programs can
+be created with Add without first opening a file. Execution preserves dirty state.
+
+During running/waiting_input, editor mutations and Open/Run are disabled; Copy
+and Stop remain available. Editing returns after HALT, Stop, or runtime error.
+Open and Close call a temporary discard confirmation defaulting to No. This
+protects edited source while saving is unavailable; tests bypass it only during
+cleanup. Failed reads and canceled file pickers preserve the editor.
+
+Pending WP-3: replace the loader boundary with FileActions/ProgramStore, add Save
+and Save As, route close confirmation through save-aware FileActions, and support
+malformed source loading in coordination with WP-2. Reapply the theme after any
+new widgets are constructed. Do not instantiate unfinished placeholder classes.
 
 ## Contributions for other document owners
 

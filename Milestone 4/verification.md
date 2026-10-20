@@ -36,3 +36,26 @@ rerunning outside the sandbox passed. GUI tests were not skipped.
 The annotated SVG describes the current WP-1 design; it is not a screenshot or
 proof of completed editor/save integration. No fresh-clone or final visual review
 is claimed by this record.
+
+## October 20 editor integration verification
+
+Branch: feature/editor-gui-integration, based on main 3580ca2.
+`python -m unittest discover -s tests`: **92 tests passed, zero skips**.
+The full suite required unsandboxed execution for temporary theme files; the
+editor/GUI checks also passed within the sandbox. Test-window cleanup cancels
+scheduled callbacks and bypasses discard prompts explicitly.
+
+New real-widget checks verify:
+- Unsaved editor changes affect each execution and remain unchanged/dirty after it.
+- In-progress cell editing is committed before Run, without needing Enter first.
+- Invalid/empty editor contents do not execute the previously loaded program.
+- Editing is blocked while waiting for READ; Copy works and Stop restores editing.
+- Canceling discard preserves file path, edits, and the open window; accepting
+  discard replaces source and clears dirty state.
+- At 1000x620, READ is above both columns, editor is left of output, and both
+  content areas have usable height. Existing instructor/rerun tests still pass.
+
+The editor embedding and edited-source execution tasks from October 16 are now
+complete. FileActions/ProgramStore, Save/Save As, malformed file correction,
+full edit/save/reopen acceptance, final manual visual review, and fresh-clone
+verification remain pending. The updated SVG documents the integrated layout.

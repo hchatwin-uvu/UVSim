@@ -167,3 +167,19 @@ remain placeholders on this base. Embedding them, Save toolbar buttons, edited
 source execution, edit/save/reopen acceptance, and fresh-clone final verification
 remain pending their owners' implementation. Do not mark the entire WP-1 package
 or final milestone verification complete until those integration checks pass.
+
+## WP-1 editor integration update — October 20
+
+Branch `feature/editor-gui-integration`: Josh's editor is embedded beside output,
+Run consumes current editor contents (including unsaved/in-progress edits), and
+execution disables editing until inactive. Open populates the editor through the
+existing loader. A temporary default-No discard guard protects Open and Close.
+The cached source copy has been removed. Theme and shared READ placement cover
+both panels. Integration tests cover edited execution, validation, read-only
+states, cancellation, and minimum layout size.
+
+Hunter's FileActions/ProgramStore, Save buttons, malformed-source loading,
+save-aware close prompts, and final edit/save/reopen acceptance remain pending.
+The October 16 note about EditorPanel being a placeholder is historical; its
+implementation and this integration are now available. Final document/visual
+review and fresh-clone verification must follow the remaining file integration.
