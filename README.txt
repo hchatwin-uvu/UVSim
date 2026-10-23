@@ -25,25 +25,31 @@ the default GUI for grading and normal operation.
 CONTROLS AND WORKFLOW
 1. Open file: browse any accessible folder and select a BasicML text file.
    Cancel preserves the session. A failed load preserves the previous program.
-2. Run: execute the loaded program from the beginning. After HALT, Stop, or an
+   Malformed words load for correction. Blank lines are ignored; validation line
+   numbers refer to editor rows. Files over 100 entries are rejected intact.
+2. Save: write valid editor contents to the current path. Without a path,
+   choose a name and folder. Failed saves preserve edits and the existing file.
+3. Save As: choose a new name/folder; subsequent Save uses that destination.
+4. Run: execute the loaded program from the beginning. After HALT, Stop, or an
    error, click Run again without reopening the file. Each run resets memory,
    CPU state, pending input, and output using current editor contents.
    Unsaved edits run too; invalid or empty programs show an error without running.
    Open file and Run are disabled while running or waiting for READ input.
-3. Stop: abandon execution or a pending READ; retain output. This is not pause.
-4. Selected File Name: displays the last successfully loaded path.
-5. Status/error area: above READ and output; shows loading, execution, input
+5. Stop: abandon execution or a pending READ; retain output. This is not pause.
+6. Selected File Name: displays the last successfully loaded path.
+7. Status/error area: above READ and output; shows loading, execution, input
    requests, completion, and errors. Correct invalid READ input and retry.
-6. READ input (-9999 to 9999): enabled only when input is requested. Enter an
+8. READ input (-9999 to 9999): enabled only when input is requested. Enter an
    integer such as 7, +7, or -5; four digits and an explicit sign are not required.
    Submit input or Enter sends it once. Accepted input clears; invalid input
    remains available for correction without losing prior execution state.
-7. Program editor (left): edit instructions/data using the controls below.
+9. Program editor (left): edit instructions/data using the controls below.
    Editing is disabled during execution and READ waits; Copy stays available.
-8. Program output (right): read-only scrollable WRITE results. Four magnitude digits
+10. Program output (right): read-only scrollable WRITE results. Four magnitude digits
    are shown: 12 becomes 0012 and -5 becomes -0005. HALT, Stop, and errors retain
-   output; loading or starting a fresh run clears it.
-9. Resize/close: controls expand with the window. Closing cancels execution.
+   output; starting a fresh run clears it. Opening another source retains prior
+   results until Run starts its new execution.
+11. Resize/close: controls expand with the window. Closing cancels execution.
 
 COLOR CONFIGURATION
 Edit theme.ini beside main.py, save the file, and restart UVSim:
@@ -58,7 +64,7 @@ The file is located beside the application even when launched from another
 working directory. Missing/unreadable files, malformed INI, missing keys, or
 invalid colors restore the entire UVU default palette without crashing.
 Native file dialogs keep operating-system styling. Custom contrast is the
-user's choice. Save/Save As controls await WP-3.
+user's choice. Open, Save, Save As, and Run are disabled during execution.
 
 PROGRAM EDITOR (MILESTONE 4 WP-2)
 The program editor displays one BasicML instruction or data value per row, with
@@ -94,8 +100,9 @@ If an Add or Paste operation would exceed 100 entries, the operation is rejected
 without changing the program. Invalid clipboard words are also rejected without
 changing the program. Cut, Copy, Paste, and Delete support multiple selections.
 
-The editor tracks changes since loading. Open and Close ask before discarding
-unsaved edits; No preserves them. Saving is not yet implemented. Canceling the
+The editor tracks changes since loading or saving. Open and Close offer Yes
+(Save), No (Discard), and Cancel (Keep editing). Canceling or failing a requested
+save prevents Open/Close from proceeding. Canceling the
 file picker or failing to load a file preserves edits without discarding them.
 While a program is running or waiting for READ input, modifying the editor is
 disabled; Copy remains available. Run validates the current editor words and
@@ -125,7 +132,8 @@ containing spaces. Use Open file for selection without typing a path.
   Test3.txt: 3333, 0003, 3332, 1666, 0666, -0334.
   Test3b.txt: 3333, 0003, 1332, 0666, -0334, -1334.
   Test4.txt: 1111, 2222, 3333, 4444, 5555.
-  Test5.txt: deliberately malformed; expect a load error. Select Test1 afterward.
+  Test5.txt: opens for correction; Run and Save reject its invalid entries.
+  Correct the highlighted entries before running or saving.
 For input recovery, try abc or 10000 at READ, then correct the value.
 
 TESTS
@@ -139,4 +147,13 @@ and Milestone 4/verification.md for coverage and recorded results.
 SUBMISSION CONTENTS
 See Milestone 4/milestone-4.md for the team plan and outstanding integration.
 Milestone 4/gui-design/README.md describes the implemented WP-1 interface.
-Save integration and final full-milestone verification are still pending.
+Save integration is complete. Final team document audit and submission review remain.
+
+MILESTONE 4 DOCUMENTATION
+Current submission index: Milestone 4/README.md
+Final SRS: Milestone 4/srs/SRS_Final_Document.pdf
+Use cases/design: Milestone 4/design.pdf
+Class definitions/diagram: Milestone 4/class-definitions.pdf
+Test register: Milestone 4/UVSim-Milestone-4-Unit-Tests.xlsx
+Verification and remaining manual acceptance: Milestone 4/verification.md
+Earlier milestone folders are historical records.

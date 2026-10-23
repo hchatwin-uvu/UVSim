@@ -18,6 +18,9 @@ class FakeEditor:
         self.words = list(words)
         self.is_dirty = False
 
+    def set_entries(self, entries):
+        self.set_words([Word.parse(entry) for entry in entries])
+
     def get_words(self):
         return list(self.words)
 
@@ -53,7 +56,7 @@ class FileActionsTests(unittest.TestCase):
         self.assertTrue(self.actions.open_path(str(previous)))
         self.editor.words = [Word(1007)]
         self.editor.is_dirty = True
-        with patch("gui.file_actions.messagebox.askyesno", return_value=True):
+        with patch("gui.file_actions.messagebox.askyesnocancel", return_value=False):
             self.assertFalse(self.actions.open_path(str(Path(self.temp_dir.name) / "missing.txt")))
         self.assertEqual(self.editor.words, [Word(1007)])
         self.assertEqual(self.actions.current_path, str(previous))
@@ -63,7 +66,7 @@ class FileActionsTests(unittest.TestCase):
         path.write_text("+4300\n", encoding="utf-8")
         self.editor.words = [Word(1007)]
         self.editor.is_dirty = True
-        with patch("gui.file_actions.messagebox.askyesno", return_value=False):
+        with patch("gui.file_actions.messagebox.askyesnocancel", return_value=None):
             self.assertFalse(self.actions.open_path(str(path)))
         self.assertEqual(self.editor.words, [Word(1007)])
         self.assertIsNone(self.actions.current_path)
