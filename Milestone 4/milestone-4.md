@@ -183,3 +183,23 @@ save-aware close prompts, and final edit/save/reopen acceptance remain pending.
 The October 16 note about EditorPanel being a placeholder is historical; its
 implementation and this integration are now available. Final document/visual
 review and fresh-clone verification must follow the remaining file integration.
+
+## Save integration â€” October 23
+
+On feature/save-gui-integration, WP-3 file actions and editor execution are
+connected. Malformed words now load for correction using load_source/set_entries;
+Run/Save require valid words. Oversized files are rejected without truncation.
+Open/Close offer Save, Discard, Cancel, preserving edits if saving fails or is
+canceled. The README and wireframe describe the integrated controls. Previous
+pending-file-integration notes above are historical. Final team document audit,
+manual visual review, and submission review remain.
+
+## Final documentation audit — October 23
+
+The current branch is `feature/save-gui-integration-docs`. The final SRS,
+use cases, class diagram/definitions, and 112-method test register are now
+under Milestone 4; see [the deliverable index](README.md). The earlier locations
+and pending integration notes above describe prior work stages. This audit
+resolves the pending document updates, including SRS feedback about NFR-02/04.
+Manual final-app acceptance, fresh-clone verification, and team submission
+review remain separate checks; meeting reports must reflect actual meetings.

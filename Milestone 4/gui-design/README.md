@@ -1,13 +1,20 @@
 # Milestone 4 GUI — WP-1
 
-Updated October 16, 2026. This describes the implemented branch, not the final
-editor/save integration. Earlier milestone designs remain historical.
+Updated October 23, 2026. The editor and file actions are integrated.
+Earlier milestone designs remain historical.
 
-![Annotated current layout](wireframe.svg)
+![GUI-matched initial state and separate design notes](wireframe.svg)
+
+The wireframe follows the supplied Windows GUI screenshot: green rectangular
+buttons, actual toolbar spacing, empty initial filename/editor/output, disabled
+Stop and READ controls, separate table headings, and the editor scrollbar.
+Annotations sit below the application frame rather than appearing as invented
+GUI footer text. It is a design illustration, not a screenshot; font metrics,
+scrollbar rendering, and available space vary with display scaling and resizing.
 
 1. The header and enabled buttons use primary green; header/button text and
    content surfaces use the off-color. Dark body text is readable on default white.
-2. Toolbar: Open file, Run, Stop. Open browses any accessible folder. Run starts
+2. Toolbar: Open file, Save, Save As, Run, Stop. Open browses any accessible folder. Run starts
    a fresh execution from the loaded source, including after HALT, Stop, or error.
    Active execution disables Open/Run and enables Stop.
 3. Selected File Name explicitly labels the last successfully loaded path.
@@ -44,14 +51,17 @@ be created with Add without first opening a file. Execution preserves dirty stat
 
 During running/waiting_input, editor mutations and Open/Run are disabled; Copy
 and Stop remain available. Editing returns after HALT, Stop, or runtime error.
-Open and Close call a temporary discard confirmation defaulting to No. This
-protects edited source while saving is unavailable; tests bypass it only during
-cleanup. Failed reads and canceled file pickers preserve the editor.
+Open and Close use FileActions.confirm_discard with Save/Discard/Cancel.
+Canceled or failed saves prevent replacement/closing. Save As updates the path
+only after a successful atomic write; Save without a path opens Save As.
 
-Pending WP-3: replace the loader boundary with FileActions/ProgramStore, add Save
-and Save As, route close confirmation through save-aware FileActions, and support
-malformed source loading in coordination with WP-2. Reapply the theme after any
-new widgets are constructed. Do not instantiate unfinished placeholder classes.
+ProgramStore.load_source reads editable strings, ignoring blank lines and
+rejecting more than 100 entries without truncation. EditorPanel.set_entries
+accepts malformed words, highlights them, and records a clean loaded baseline.
+Run and Save validate with get_words(); displayed line numbers refer to editor
+rows after blank lines are removed. ProgramStore.load remains the strict API
+for console execution. FileActions loads source before asking to discard, then
+reads again after confirmation in case Save changed the selected file.
 
 ## Contributions for other document owners
 

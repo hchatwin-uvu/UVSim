@@ -1,25 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720">
-<rect width="1100" height="720" fill="white"/>
-<g font-family="Segoe UI, sans-serif" fill="#182113">
-<rect x="20" y="20" width="1060" height="85" fill="#4C721D"/>
-<text x="40" y="58" font-size="28" fill="white">UVSim</text><text x="40" y="86" font-size="16" fill="white">BasicML simulator</text>
-<text x="20" y="140" font-size="18">Open file    Run    Stop</text>
-<text x="20" y="177" font-size="16" font-weight="bold">Selected File Name</text>
-<text x="20" y="205" font-size="16">programs/Test1.txt</text>
-<path d="M20 220H1080" stroke="#4C721D"/>
-<text x="20" y="249" font-size="16">Status: program loaded / validation / execution messages</text>
-<text x="20" y="283" font-size="16">READ input (-9999 to 9999)</text>
-<rect x="20" y="298" width="870" height="36" fill="white" stroke="#4C721D"/>
-<rect x="910" y="298" width="170" height="36" fill="#4C721D"/>
-<text x="935" y="322" font-size="16" fill="white">Submit input</text>
-<text x="20" y="366" font-size="18">Program editor (addresses 00-99)</text>
-<text x="560" y="366" font-size="18">Program output</text>
-<text x="20" y="397" font-size="16">Add   Delete   Cut   Copy   Paste</text>
-<rect x="20" y="411" width="510" height="220" fill="white" stroke="#4C721D"/>
-<text x="35" y="441" font-size="16">Address       Instruction / data</text>
-<text x="35" y="477" font-size="16">00                +1007</text>
-<text x="35" y="507" font-size="16">01                +1008</text>
-<rect x="560" y="385" width="520" height="246" fill="white" stroke="#4C721D"/>
-<text x="20" y="657" font-size="15">Editor validation appears here. Double-click or F2 to edit.</text>
-<text x="20" y="697" font-size="15">Run uses current edits. Editing locks during execution. Open/Close confirm discard. Save integration pending.</text>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="900" viewBox="0 0 1100 900">
+<title>UVSim initial window and design annotations</title>
+<desc>GUI-matched wireframe showing UVU branding, actual button shapes, empty editor and output, and disabled Stop and READ controls. Notes below the window are documentation, not GUI controls.</desc>
+<rect width="1100" height="900" fill="#F3F4F2"/>
+<rect x="1" y="1" width="1098" height="748" rx="7" fill="#FFFFFF" stroke="#B8B8B8"/>
+<path d="M8 1H1092Q1099 1 1099 8V31H1V8Q1 1 8 1" fill="#F3F3F3"/>
+<g font-family="Segoe UI, sans-serif" font-size="13" fill="#182113">
+<text x="18" y="21">UVSim | BasicML simulator</text>
+<path d="M986 15h11 M1031 10h10v10h-10z M1074 10l10 10m0-10l-10 10" fill="none" stroke="#555"/>
+<rect x="20" y="51" width="1060" height="102" fill="#4C721D"/>
+<text x="38" y="106" font-size="32" font-weight="700" fill="#FFFFFF">UVSim</text>
+<text x="38" y="132" fill="#FFFFFF">BasicML simulator</text>
+<rect x="20" y="169" width="107" height="36" fill="#4C721D"/><text x="73.5" y="192" text-anchor="middle" fill="#FFFFFF">Open file</text><rect x="135" y="169" width="107" height="36" fill="#4C721D"/><text x="188.5" y="192" text-anchor="middle" fill="#FFFFFF">Save</text><rect x="250" y="169" width="107" height="36" fill="#4C721D"/><text x="303.5" y="192" text-anchor="middle" fill="#FFFFFF">Save As</text><rect x="365" y="169" width="107" height="36" fill="#4C721D"/><text x="418.5" y="192" text-anchor="middle" fill="#FFFFFF">Run</text><text x="533.5" y="192" text-anchor="middle" fill="#777777">Stop</text><text x="20" y="235" font-weight="700">Selected File Name</text><text x="20" y="261" >No program selected</text><path d="M20 277H1080" stroke="#4C721D" stroke-width="2"/><text x="20" y="304" >Open a BasicML file to begin</text><text x="20" y="337" >READ input (-9999 to 9999)</text><rect x="20" y="349" width="943" height="31" fill="white" stroke="#A6A39C"/><text x="1027.0" y="370" text-anchor="middle" fill="#777777">Submit input</text><text x="20" y="411" >Program editor (addresses 00-99)</text><text x="551" y="411" >Program output</text><rect x="20" y="420" width="107" height="36" fill="#4C721D"/><text x="73.5" y="443" text-anchor="middle" fill="#FFFFFF">Add</text><rect x="131" y="420" width="107" height="36" fill="#4C721D"/><text x="184.5" y="443" text-anchor="middle" fill="#FFFFFF">Delete</text><rect x="242" y="420" width="107" height="36" fill="#4C721D"/><text x="295.5" y="443" text-anchor="middle" fill="#FFFFFF">Cut</text><rect x="353" y="420" width="107" height="36" fill="#4C721D"/><text x="406.5" y="443" text-anchor="middle" fill="#FFFFFF">Copy</text><rect x="464" y="420" width="69" height="36" fill="#4C721D"/><text x="498.5" y="443" text-anchor="middle" fill="#FFFFFF">Paste</text><rect x="20" y="463" width="517" height="267" fill="white" stroke="#A6A39C"/>
+<rect x="22" y="465" width="73" height="24" fill="#FAFAFA" stroke="#AAA79F"/>
+<rect x="97" y="465" width="423" height="24" fill="#FAFAFA" stroke="#AAA79F"/>
+<rect x="521" y="463" width="16" height="267" fill="#E0DED8" stroke="#AAA79F"/>
+<path d="M524 474l5-6 5 6z M524 719l5 6 5-6z" fill="#333"/>
+<path d="M524 592h10m-10 4h10" stroke="#AAA79F"/>
+<rect x="551" y="420" width="529" height="304" fill="white" stroke="#4C721D"/>
+<text x="58" y="482" text-anchor="middle" font-size="12">Address</text><text x="308" y="482" text-anchor="middle" font-size="12">Instruction / data</text></g><g font-family="Segoe UI, sans-serif" fill="#182113">
+<text x="20" y="785" font-size="17" font-weight="700">Design notes — outside the application window</text>
+<g font-size="13">
+<text x="20" y="812">Initial empty state: Stop, READ input, and Submit input are disabled; source and output are empty.</text>
+<text x="20" y="836">Toolbar order and two-column layout match the supplied GUI. Run executes current editor contents.</text>
+<text x="20" y="860">Open/Close offer Save, Discard, or Cancel for unsaved edits. File dialogs use the operating-system design.</text>
+<text x="20" y="884">Green #4C721D / white #FFFFFF are configurable. Widget metrics and scrollbars vary with display scaling.</text>
+</g></g></svg>

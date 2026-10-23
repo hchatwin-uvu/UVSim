@@ -15,6 +15,18 @@ MAX_PROGRAM_WORDS = 100
 class ProgramStore:
     """Load and save programs as one formatted word per line."""
 
+    def load_source(self, path: str) -> list[str]:
+        """Read editable entries without rejecting malformed BasicML words.
+
+        Blank lines are ignored as in load(). Reject oversized files without
+        truncation so the existing editor is never partially replaced.
+        """
+        with open(path, encoding="utf-8-sig") as source:
+            entries = [line.strip() for line in source if line.strip()]
+        if len(entries) > MAX_PROGRAM_WORDS:
+            raise ValueError("Program contains more than 100 words.")
+        return entries
+
     def load(self, path: str) -> list[Word]:
         """Return the validated words in the file at path.
 
