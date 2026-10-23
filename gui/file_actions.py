@@ -1,10 +1,8 @@
-"""WP-3: Open, Save, and Save As scaffold.
-
-Owns the file dialogs and the current path; moves words between ProgramStore
-and the editor. Implement the contract defined in Milestone 4/milestone-4.md.
-No behavior is implemented here.
-"""
+"""Open, Save, and Save As commands for the program editor."""
+import os
+import tkinter as tk
 from collections.abc import Callable
+from tkinter import filedialog, messagebox
 
 from gui.editor_panel import EditorPanel
 from program_store import ProgramStore
@@ -15,33 +13,88 @@ class FileActions:
 
     def __init__(self, root, store: ProgramStore, editor: EditorPanel,
                  on_status: Callable[[str], None]) -> None:
-        """Keep the collaborators; on_status reports results and errors."""
-        raise NotImplementedError("WP-3: FileActions.__init__")
+        self.root = root
+        self.store = store
+        self.editor = editor
+        self.on_status = on_status
+        self._current_path: str | None = None
 
     @property
     def current_path(self) -> str | None:
         """Path last opened or saved, for the Selected File Name field."""
-        raise NotImplementedError("WP-3: FileActions.current_path")
+        return self._current_path
 
     def open(self) -> bool:
-        """Pick a file from any directory and load it into the editor.
-
-        Cancel, or a failed load, leaves the editor and current path unchanged.
-        """
-        raise NotImplementedError("WP-3: FileActions.open")
+        """Choose a program file and open it, preserving state on cancellation."""
+        try:
+            path = filedialog.askopenfilename(
+                parent=self.root,
+                title="Open BasicML program",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            )
+        except tk.TclError as error:
+            self.on_status(f"Cannot open file picker: {error}")
+            return False
+        return self.open_path(path) if path else False
 
     def open_path(self, path: str) -> bool:
         """Load path without a dialog, e.g. the optional command-line file."""
-        raise NotImplementedError("WP-3: FileActions.open_path")
+        try:
+            words = self.store.load(path)
+            if not self.confirm_discard():
+                return False
+            self.editor.set_words(words)
+        except (OSError, ValueError, tk.TclError) as error:
+            self.on_status(f"Unable to open program: {error}")
+            return False
+
+        self._current_path = os.fspath(path)
+        self.on_status(f"Opened {self._current_path}")
+        return True
 
     def save(self) -> bool:
-        """Save the editor to the current path; behaves as save_as() without one."""
-        raise NotImplementedError("WP-3: FileActions.save")
+        """Save to the current path, or prompt for one if not set."""
+        if self._current_path is None:
+            return self.save_as()
+        try:
+            self.store.save(self._current_path, self.editor.get_words())
+        except (OSError, ValueError) as error:
+            self.on_status(f"Unable to save program: {error}")
+            return False
+        self.editor.mark_saved()
+        self.on_status(f"Saved {self._current_path}")
+        return True
 
     def save_as(self) -> bool:
-        """Pick a name and directory, save, and make it the current path."""
-        raise NotImplementedError("WP-3: FileActions.save_as")
+        """Choose a destination and save the editor there."""
+        try:
+            path = filedialog.asksaveasfilename(
+                parent=self.root,
+                title="Save BasicML program",
+                defaultextension=".txt",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            )
+        except tk.TclError as error:
+            self.on_status(f"Cannot open save dialog: {error}")
+            return False
+        if not path:
+            return False
+        try:
+            self.store.save(path, self.editor.get_words())
+        except (OSError, ValueError) as error:
+            self.on_status(f"Unable to save program: {error}")
+            return False
+
+        self._current_path = os.fspath(path)
+        self.editor.mark_saved()
+        self.on_status(f"Saved {self._current_path}")
+        return True
 
     def confirm_discard(self) -> bool:
-        """Ask before unsaved edits are lost; True when it is safe to proceed."""
-        raise NotImplementedError("WP-3: FileActions.confirm_discard")
+        """Ask before dirty editor contents are replaced or discarded."""
+        return not self.editor.is_dirty or messagebox.askyesno(
+            "Discard unsaved edits?",
+            "The program has unsaved edits. Discard them and continue?",
+            parent=self.root,
+            default="no",
+        )

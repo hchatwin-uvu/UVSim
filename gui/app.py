@@ -1,13 +1,13 @@
 """WP-1: Tkinter window composed against the shared controller contract."""
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import ttk
 from controller import SimulatorController
 from gui.io_panel import IOPanel
 from gui.editor_panel import EditorPanel
+from gui.file_actions import FileActions
 from gui.theme import apply_theme
 from theme_config import load_theme
-from loader import load_program
-from word import Word
+from program_store import ProgramStore
 
 
 class UVSimApp:
@@ -22,7 +22,6 @@ class UVSimApp:
         self._timer = None
         self._closed = False
         self._local_error = None
-        self._filename = "No program selected"
         self.theme = theme if theme is not None else load_theme()
         root.title("UVSim | BasicML simulator")
         root.geometry("1100x720")
@@ -38,11 +37,15 @@ class UVSimApp:
         toolbar.pack(fill="x")
         self.open_button = ttk.Button(toolbar, text="Open file", command=self.open_file)
         self.open_button.pack(side="left")
+        self.save_button = ttk.Button(toolbar, text="Save", command=self.save_file)
+        self.save_button.pack(side="left", padx=(8, 0))
+        self.save_as_button = ttk.Button(toolbar, text="Save As", command=self.save_file_as)
+        self.save_as_button.pack(side="left", padx=(8, 0))
         self.run_button = ttk.Button(toolbar, text="Run", command=self.start)
         self.run_button.pack(side="left", padx=8)
         self.stop_button = ttk.Button(toolbar, text="Stop", command=self.stop)
         self.stop_button.pack(side="left")
-        self.filename = tk.StringVar(value=self._filename)
+        self.filename = tk.StringVar(value="No program selected")
         self.filename_heading = ttk.Label(frame, text="Selected File Name", font=("Segoe UI", 10, "bold"))
         self.filename_heading.pack(anchor="w", pady=(14, 4))
         self.file_label = ttk.Label(frame, textvariable=self.filename, wraplength=700)
@@ -63,6 +66,8 @@ class UVSimApp:
         output_parent = ttk.Frame(workspace)
         output_parent.grid(row=0, column=1, sticky="nsew")
         self.editor = EditorPanel(editor_parent, self._editor_changed)
+        self.file_actions = FileActions(
+            root, ProgramStore(), self.editor, self._file_status_changed)
         self.panel = panel_factory(panel_parent, self.submit_input, output_parent=output_parent)
         apply_theme(root, self.theme)
         frame.bind("<Configure>", self._resize_labels)
@@ -99,34 +104,27 @@ class UVSimApp:
     def open_file(self):
         if self.controller.state in ("running", "waiting_input"):
             return
-        try:
-            path = filedialog.askopenfilename(
-                parent=self.root, title="Open BasicML program",
-                filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-        except tk.TclError as error:
-            self._local_error = f"Cannot open file picker: {error}. Try Open file again."
-            self.refresh()
-            return
-        if path:
-            self.load_file(path)
+        self.file_actions.open()
+        self.refresh()
 
     def load_file(self, path):
         if self.controller.state in ("running", "waiting_input"):
             return False
-        # Replace this file boundary with WP-3's FileActions when available.
-        def load():
-            words = [Word(value) for value in load_program(path)]
-            if not self.confirm_discard():
-                return False
-            if self.controller.load_program(words):
-                self.editor.set_words(words)
-                return True
-            return False
-        accepted = self._invoke(load)
-        if accepted:
-            self._filename = str(path)
+        accepted = self.file_actions.open_path(path)
         self.refresh()
-        return bool(accepted)
+        return accepted
+
+    def save_file(self):
+        if self.controller.state in ("running", "waiting_input"):
+            return
+        self.file_actions.save()
+        self.refresh()
+
+    def save_file_as(self):
+        if self.controller.state in ("running", "waiting_input"):
+            return
+        self.file_actions.save_as()
+        self.refresh()
 
     def start(self):
         if self.controller.state not in ("running", "waiting_input"):
@@ -144,13 +142,11 @@ class UVSimApp:
         self._local_error = None
         self.status.set("Program edited. Run uses the current editor contents.")
 
+    def _file_status_changed(self, message):
+        self._local_error = message
+
     def confirm_discard(self):
-        """Temporary discard guard until WP-3 supplies save-aware FileActions."""
-        return not self.editor.is_dirty or messagebox.askyesno(
-            "Discard unsaved edits?",
-            "The program has unsaved edits. Saving is not available yet.\n"
-            "Discard these edits and continue?",
-            parent=self.root, default="no")
+        return self.file_actions.confirm_discard()
 
     def stop(self):
         if self.controller.state in ("running", "waiting_input"):
@@ -168,11 +164,13 @@ class UVSimApp:
         state = self.controller.state
         active = state in ("running", "waiting_input")
         self.open_button.configure(state="disabled" if active else "normal")
+        self.save_button.configure(state="disabled" if active else "normal")
+        self.save_as_button.configure(state="disabled" if active else "normal")
         can_run = not active
         self.run_button.configure(state="normal" if can_run else "disabled")
         self.stop_button.configure(state="normal" if active else "disabled")
         self.editor.set_enabled(not active)
-        self.filename.set(self._filename)
+        self.filename.set(self.file_actions.current_path or "No program selected")
         self.status.set(self._local_error or self.controller.message)
         self.panel.refresh(state, self.controller.outputs)
 

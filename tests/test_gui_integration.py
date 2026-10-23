@@ -89,17 +89,17 @@ class TestGUIIntegration(unittest.TestCase):
 
         app.load_file(str(ROOT / "programs" / "Test1.txt"))
 
-        self.assertEqual(app._filename, str(ROOT / "programs" / "Test1.txt"))
         self.assertEqual(app.filename.get(), str(ROOT / "programs" / "Test1.txt"))
-        self.assertEqual(app.status.get(), "Program loaded successfully.")
+        self.assertEqual(app.status.get(), f"Opened {ROOT / 'programs' / 'Test1.txt'}")
         self.assertEqual(str(app.run_button.cget("state")), "normal")
-        self.assertEqual(app.panel.last_state, "ready")
+        self.assertEqual(app.panel.last_state, "empty")
+        self.assertEqual(app.controller.loaded_programs, [])
 
     def test_open_file_cancellation_is_a_noop(self):
         controller = FakeController()
         app = self.make_app(controller)
 
-        with patch("gui.app.filedialog.askopenfilename", return_value=""):
+        with patch("gui.file_actions.filedialog.askopenfilename", return_value=""):
             app.open_file()
 
         self.assertEqual(controller.loaded_programs, [])
@@ -134,16 +134,17 @@ class TestGUIIntegration(unittest.TestCase):
 
     def test_load_failure_keeps_existing_filename_and_sets_local_error(self):
         app = self.make_app(FakeController(state="ready", message="Program loaded successfully."))
-        app._filename = "existing.txt"
+        app.file_actions._current_path = "existing.txt"
         app.filename.set("existing.txt")
 
-        with patch("gui.app.load_program", side_effect=ValueError("Malformed program")):
+        with patch.object(app.file_actions.store, "load",
+                          side_effect=ValueError("Malformed program")):
             result = app.load_file("bad.txt")
 
         self.assertFalse(result)
-        self.assertEqual(app._filename, "existing.txt")
+        self.assertEqual(app.file_actions.current_path, "existing.txt")
         self.assertEqual(app.filename.get(), "existing.txt")
-        self.assertEqual(app.status.get(), "Unable to complete operation: Malformed program")
+        self.assertEqual(app.status.get(), "Unable to open program: Malformed program")
 
 
 class TestRealWindow(unittest.TestCase):
@@ -184,7 +185,8 @@ class TestRealWindow(unittest.TestCase):
                 self.assertTrue(self.app.load_file(ROOT / "programs" / name))
                 self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
                 self.assertFalse(self.app.run_button.instate(["disabled"]))
-                with patch("gui.app.load_program", side_effect=AssertionError("Reread disk")):
+                with patch.object(self.app.file_actions.store, "load",
+                                  side_effect=AssertionError("Reread disk")):
                     self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
         previous = self.app.filename.get()
         self.assertFalse(self.app.load_file(ROOT / "programs/Test5.txt"))
@@ -259,13 +261,13 @@ class TestRealWindow(unittest.TestCase):
         self.app.load_file(ROOT / "programs/Test1.txt")
         self.app.editor.modify_entry(0, "+4300")
         previous = self.app.filename.get()
-        with patch("gui.app.messagebox.askyesno", return_value=False):
+        with patch("gui.file_actions.messagebox.askyesno", return_value=False):
             self.assertFalse(self.app.load_file(ROOT / "programs/Test2.txt"))
             self.app.close()
         self.assertFalse(self.app._closed)
         self.assertEqual(self.app.filename.get(), previous)
         self.assertTrue(self.app.editor.is_dirty)
-        with patch("gui.app.messagebox.askyesno", return_value=True):
+        with patch("gui.file_actions.messagebox.askyesno", return_value=True):
             self.assertTrue(self.app.load_file(ROOT / "programs/Test2.txt"))
         self.assertFalse(self.app.editor.is_dirty)
 
