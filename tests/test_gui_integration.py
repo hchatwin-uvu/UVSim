@@ -137,7 +137,7 @@ class TestGUIIntegration(unittest.TestCase):
         app.file_actions._current_path = "existing.txt"
         app.filename.set("existing.txt")
 
-        with patch.object(app.file_actions.store, "load",
+        with patch.object(app.file_actions.store, "load_source",
                           side_effect=ValueError("Malformed program")):
             result = app.load_file("bad.txt")
 
@@ -185,12 +185,14 @@ class TestRealWindow(unittest.TestCase):
                 self.assertTrue(self.app.load_file(ROOT / "programs" / name))
                 self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
                 self.assertFalse(self.app.run_button.instate(["disabled"]))
-                with patch.object(self.app.file_actions.store, "load",
+                with patch.object(self.app.file_actions.store, "load_source",
                                   side_effect=AssertionError("Reread disk")):
                     self.assertEqual(list(map(int, self.run_to_end(inputs))), expected)
         previous = self.app.filename.get()
-        self.assertFalse(self.app.load_file(ROOT / "programs/Test5.txt"))
-        self.assertEqual(self.app.filename.get(), previous)
+        self.assertTrue(self.app.load_file(ROOT / "programs/Test5.txt"))
+        self.app.start()
+        self.assertIn("Invalid entry", self.app.status.get())
+        self.assertNotEqual(self.app.controller.state, "running")
 
     def test_layout_and_filename_label(self):
         self.root.deiconify()
@@ -261,13 +263,13 @@ class TestRealWindow(unittest.TestCase):
         self.app.load_file(ROOT / "programs/Test1.txt")
         self.app.editor.modify_entry(0, "+4300")
         previous = self.app.filename.get()
-        with patch("gui.file_actions.messagebox.askyesno", return_value=False):
+        with patch("gui.file_actions.messagebox.askyesnocancel", return_value=None):
             self.assertFalse(self.app.load_file(ROOT / "programs/Test2.txt"))
             self.app.close()
         self.assertFalse(self.app._closed)
         self.assertEqual(self.app.filename.get(), previous)
         self.assertTrue(self.app.editor.is_dirty)
-        with patch("gui.file_actions.messagebox.askyesno", return_value=True):
+        with patch("gui.file_actions.messagebox.askyesnocancel", return_value=False):
             self.assertTrue(self.app.load_file(ROOT / "programs/Test2.txt"))
         self.assertFalse(self.app.editor.is_dirty)
 
@@ -289,6 +291,61 @@ class TestRealWindow(unittest.TestCase):
                         self.app.panel.output.winfo_rootx())
         self.assertGreater(self.app.editor.tree.winfo_height(), 80)
         self.assertGreater(self.app.panel.output.winfo_height(), 80)
+
+    def test_malformed_open_correct_save_as_reopen_and_run(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            original = Path(folder) / "broken.txt"
+            saved = Path(folder) / "corrected.txt"
+            original.write_text("+1102\n+4300\nbroken\n", encoding="utf-8")
+            self.assertTrue(self.app.load_file(original))
+            self.app.start()
+            self.assertIn("line 3", self.app.status.get())
+            self.app.editor.modify_entry(2, "+0042")
+            self.assertEqual(list(map(int, self.run_to_end([]))), [42])
+            with patch("gui.file_actions.filedialog.asksaveasfilename", return_value=str(saved)):
+                self.app.save_file_as()
+            self.assertEqual(self.app.filename.get(), str(saved))
+            self.assertFalse(self.app.editor.is_dirty)
+            self.assertEqual(saved.read_text(), "+1102\n+4300\n+0042\n")
+            self.app.editor.modify_entry(2, "+0007")
+            self.app.save_file()
+            self.assertTrue(self.app.load_file(saved))
+            self.assertEqual(list(map(int, self.run_to_end([]))), [7])
+            self.assertEqual(list(map(int, self.run_to_end([]))), [7])
+            self.assertIn("broken", original.read_text())
+
+    def test_save_before_open_and_cancel_or_failed_save_prevents_discard(self):
+        import tempfile
+        from word import Word
+        with tempfile.TemporaryDirectory() as folder:
+            saved = Path(folder) / "draft.txt"
+            target = Path(folder) / "target.txt"
+            target.write_text("+4300\n")
+            self.app.editor.set_words([Word(0)])
+            self.app.editor.modify_entry(0, "+4300")
+            with patch("gui.file_actions.messagebox.askyesnocancel", return_value=True):
+                with patch("gui.file_actions.filedialog.asksaveasfilename", return_value=""):
+                    self.assertFalse(self.app.load_file(target))
+                self.assertTrue(self.app.editor.is_dirty)
+                with patch("gui.file_actions.filedialog.asksaveasfilename", return_value=str(saved)):
+                    with patch.object(self.app.file_actions.store, "save", side_effect=OSError("disk full")):
+                        self.assertFalse(self.app.load_file(target))
+                    self.assertTrue(self.app.editor.is_dirty)
+                    self.assertTrue(self.app.load_file(target))
+            self.assertEqual(saved.read_text(), "+4300\n")
+            self.assertEqual(self.app.filename.get(), str(target))
+
+    def test_oversized_open_preserves_current_source(self):
+        import tempfile
+        from word import Word
+        self.app.editor.set_words([Word(4300)])
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "oversized.txt"
+            path.write_text("+0000\n" * 101)
+            self.assertFalse(self.app.load_file(path))
+        self.assertEqual(self.app.editor.get_words(), [Word(4300)])
+        self.assertIn("100", self.app.status.get())
 
 
 if __name__ == "__main__":

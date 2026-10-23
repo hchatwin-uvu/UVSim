@@ -69,11 +69,30 @@ class EditorPanel:
             raise ValueError("Program cannot exceed 100 entries (00-99).")
         if any(not isinstance(w, Word) for w in words):
             raise TypeError("set_words expects Word objects.")
+        self.set_entries([w.format() for w in words])
+
+    def set_entries(self, entries: Sequence[str]) -> None:
+        """Load editable source, including invalid words, without marking dirty.
+
+        Validation uses editor row numbers after blank file lines are ignored.
+        Run and Save continue to validate through get_words().
+        """
+        entries = list(entries)
+        if len(entries) > MAX_ENTRIES:
+            raise ValueError("Program cannot exceed 100 entries (00-99).")
+        if any(not isinstance(entry, str) for entry in entries):
+            raise TypeError("set_entries expects strings.")
         self._cancel_edit()
-        self._entries = [w.format() for w in words]
+        self._entries = entries.copy()
         self._saved_entries = self._entries.copy()
         self._refresh_tree([])
         self.status.set("Program loaded. Double-click a word to edit it.")
+        for index, entry in enumerate(entries):
+            try:
+                Word.parse(entry)
+            except ValueError as error:
+                self.status.set(f"Address {index:02d} (line {index+1}): {error}")
+                break
 
     def get_words(self) -> list[Word]:
         """Return current words; report the first invalid address and line."""

@@ -40,10 +40,12 @@ class FileActions:
     def open_path(self, path: str) -> bool:
         """Load path without a dialog, e.g. the optional command-line file."""
         try:
-            words = self.store.load(path)
+            entries = self.store.load_source(path)
             if not self.confirm_discard():
                 return False
-            self.editor.set_words(words)
+            # Saving during confirmation may have changed the selected file.
+            entries = self.store.load_source(path)
+            self.editor.set_entries(entries)
         except (OSError, ValueError, tk.TclError) as error:
             self.on_status(f"Unable to open program: {error}")
             return False
@@ -92,9 +94,15 @@ class FileActions:
 
     def confirm_discard(self) -> bool:
         """Ask before dirty editor contents are replaced or discarded."""
-        return not self.editor.is_dirty or messagebox.askyesno(
-            "Discard unsaved edits?",
-            "The program has unsaved edits. Discard them and continue?",
+        if not self.editor.is_dirty:
+            return True
+        answer = messagebox.askyesnocancel(
+            "Save unsaved edits?",
+            "Save your changes before continuing?\n"
+            "Yes: Save   No: Discard   Cancel: Keep editing",
             parent=self.root,
-            default="no",
+            default="cancel",
         )
+        if answer is None:
+            return False
+        return self.save() if answer else True

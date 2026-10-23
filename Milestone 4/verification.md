@@ -59,3 +59,57 @@ The editor embedding and edited-source execution tasks from October 16 are now
 complete. FileActions/ProgramStore, Save/Save As, malformed file correction,
 full edit/save/reopen acceptance, final manual visual review, and fresh-clone
 verification remain pending. The updated SVG documents the integrated layout.
+
+## October 23 save integration verification
+
+Base main: 5cf3e2f. Branch: feature/save-gui-integration.
+`python -m unittest discover -s tests`: **112 passed, zero skips**.
+
+Real Tk integration tests exercise malformed open, rejected Run, correction,
+execution, Save As to a temporary directory, filename/dirty-state updates, further
+editing, Save, reopen, and repeated execution. The original malformed file is
+preserved by Save As. Tests also cover canceled Save As during an Open prompt,
+failed saves preventing discard, successful save-before-open, and oversized-file
+rejection preserving existing editor contents. Existing atomic-write tests verify
+that replacement failure preserves the original file and cleans temporary files.
+All instructor program, controller, editor, GUI, and theme tests pass.
+
+Files over 100 nonblank entries remain rejected without truncation. Malformed
+BasicML words within that limit load and highlight for repair. UTF-8 decoding
+errors remain file-read errors. Save requires valid words; invalid drafts are
+not written. Validation line numbers refer to editor rows, not skipped blank
+file lines. Save/Discard/Cancel is shared by Open and Close.
+
+The prior pending save/malformed-word integration notes are resolved. Manual
+visual review of the final combined app, fresh-clone verification, final team
+document audit, and submission approval are not claimed by these test results.
+
+## October 23 final documentation audit
+
+Branch renamed to `feature/save-gui-integration-docs`; implementation changes
+remain on this branch. Current deliverables are indexed in [README.md](README.md).
+Earlier milestone documents and dated verification notes remain historical.
+
+- Audited the final SRS against implemented editor, save, rerun, configuration,
+  validation, capacity, and recovery behavior. Retained FR-01–25 identifiers;
+  added FR-26–42. Former NFR-02 is now an internal architecture principle;
+  former NFR-04 recovery is functional FR-26.
+- Updated use cases UC-01–21 and added UC-22–26 for Save, Save As, themes,
+  unsaved-change decisions, and Stop. Distinguished strict console loading
+  from editable GUI source loading.
+- Matched all 10 runtime classes and 77 declared methods/properties against
+  the Python AST; documented Word memory, integer accumulator, file access,
+  source/dirty-state ownership, and execution state. Added a class diagram.
+- Matched all 112 workbook rows to exact executable test methods and the
+  successful October 23 run (Python 3.13, Windows, real Tk, zero skips).
+  Preserved UT-01–36, corrected Word expectations, validated use-case IDs,
+  and checked table coverage, populated cells, and formula-error scan.
+- Exported SRS, use cases, and class definitions PDFs; rendered and inspected
+  all 25 pages. Inspected workbook renders at the start, middle, and end.
+  Updated repository/test README links to the current deliverables.
+
+The document-audit item is complete. The remaining acceptance work is final
+manual app/readability review, a dedicated NFR-05 two-second startup measurement,
+fresh-clone verification, and team submission/meeting-report review. Automated
+suite duration is not a measurement of NFR-05. No new runtime behavior was
+changed as part of this documentation audit.
