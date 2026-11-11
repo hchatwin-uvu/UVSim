@@ -27,18 +27,18 @@ individual names and the submission deadline remain to be assigned.
 **Primary files:** `word.py`, `uvsim.py`, `input_validation.py`, `loader.py`,
 `operations/`, and relevant files in `tests/`.
 
-- [ ] Expand memory from 100 to 250 registers, addressed `000` through `249`.
-- [ ] Support six-digit words with three-digit operation codes and addresses.
+- [x] Expand memory from 100 to 250 registers, addressed `000` through `249`.
+- [x] Support six-digit words with three-digit operation codes and addresses.
       Keep the existing operation codes, adding a leading zero: READ becomes
       `010`, so READ into address `007` is `010007`.
-- [ ] Update instruction decoding, formatting, numeric input, and validation.
-- [ ] Reject address-referencing instructions outside `000–249`.
-- [ ] Provide backend validation enforcing a maximum of 250 lines; Task 3
+- [x] Update instruction decoding, formatting, numeric input, and validation.
+- [x] Reject address-referencing instructions outside `000–249`.
+- [x] Provide backend validation enforcing a maximum of 250 lines; Task 3
       integrates that validation into loading and editing workflows.
-- [ ] Support six-digit arithmetic and the existing overflow behavior at the
+- [x] Support six-digit arithmetic and the existing overflow behavior at the
       new word limits. Calculations that only exceeded the old four-digit
       limits must now succeed when within the new limits.
-- [ ] Test valid boundary addresses, invalid addresses, 250 versus 251 lines,
+- [x] Test valid boundary addresses, invalid addresses, 250 versus 251 lines,
       six-digit numeric limits, arithmetic, overflow, and instruction execution.
 
 ## Task 2 — Support old-file conversion
