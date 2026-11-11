@@ -41,7 +41,7 @@ class Word:
 
         word = text.strip()
 
-        # BasicML words must be signed and exactly six digits. isdecimal()
+        # BasicML words must be signed and exactly six digits.
         if (len(word) != WORD_DIGITS + 1 or word[0] not in "+-"
                 or not word[1:].isdecimal() or not word[1:].isascii()):
             raise ValueError(
@@ -68,7 +68,7 @@ class Word:
     def format(self) -> str:
         """Return the file format: sign plus six digits, e.g. +010007."""
 
-        # + forces the sign, 05 pads to seven characters with zeros
+        # + forces the sign, 07 pads to seven characters with zeros
         return f"{self._value:+0{WORD_DIGITS + 1}d}"
 
     def __eq__(self, other) -> bool:
