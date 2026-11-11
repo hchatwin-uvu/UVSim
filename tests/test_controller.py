@@ -7,9 +7,9 @@ from word import Word
 
 ROOT = Path(__file__).resolve().parents[1]
 
-WRITE_PROGRAM = [Word(v) for v in (1103, 4300, 0, 1234)]  # WRITE 03, HALT
-READ_PROGRAM = [Word(v) for v in (1002, 4300)]            # READ 02, HALT
-LOOP_PROGRAM = [Word(4000)]                               # BRANCH 00
+WRITE_PROGRAM = [Word(v) for v in (11003, 43000, 0, 1234)]  # WRITE 003, HALT
+READ_PROGRAM = [Word(v) for v in (10002, 43000)]             # READ 002, HALT
+LOOP_PROGRAM = [Word(40000)]                                 # BRANCH 000
 
 class ControllerTests(unittest.TestCase):
     def setUp(self):
@@ -35,7 +35,7 @@ class ControllerTests(unittest.TestCase):
             self.assertEqual(self.c.state, 'waiting_input')
             before = self.c.machine.memory.copy()
             counter = self.c.machine.instruction_counter
-            for invalid in ['', 'abc', '1.5', '10000', '-10000']:
+            for invalid in ['', 'abc', '1.5', '1000000', '-1000000']:
                 self.assertFalse(self.c.submit_input(invalid))
                 self.assertEqual(self.c.machine.memory, before)
                 self.assertEqual(self.c.machine.instruction_counter, counter)
@@ -95,7 +95,7 @@ class ControllerTests(unittest.TestCase):
         self.run_to_end()
         self.assertEqual((self.c.state, self.c.outputs), ('halted', [1234]))
 
-        self.c.load_program([Word(9900)])                       # invalid opcode
+        self.c.load_program([Word(99000)])                      # invalid opcode
         self.run_to_end()
         self.assertEqual(self.c.state, 'error')
         self.assertTrue(self.c.load_program(WRITE_PROGRAM))
@@ -107,7 +107,7 @@ class ControllerTests(unittest.TestCase):
         self.c.start(); self.c.tick(3)
         self.assertFalse(self.c.load_program(WRITE_PROGRAM))
         self.assertEqual(self.c.state, 'running')
-        self.assertEqual(self.c.machine.memory[0], Word(4000))
+        self.assertEqual(self.c.machine.memory[0], Word(40000))
         self.c.stop()
 
         self.c.load_program(READ_PROGRAM)
@@ -120,16 +120,16 @@ class ControllerTests(unittest.TestCase):
         self.c.load_program(WRITE_PROGRAM)
         self.run_to_end()
         before = self.c.machine.memory.copy()
-        for bad in ([], [Word(0)] * 101):
+        for bad in ([], [Word(0)] * 251):
             self.assertFalse(self.c.load_program(bad))
             self.assertEqual((self.c.state, self.c.outputs), ('halted', [1234]))
             self.assertEqual(self.c.machine.memory, before)
             self.assertNotEqual(self.c.message, 'Program loaded successfully.')
 
-    def test_exactly_100_words_is_accepted(self):
-        self.assertTrue(self.c.load_program([Word(0)] * 100))
+    def test_exactly_250_words_is_accepted(self):
+        self.assertTrue(self.c.load_program([Word(0)] * 250))
 
     def test_non_word_entries_are_a_type_error(self):
         with self.assertRaises(TypeError):
-            self.c.load_program([1103, 4300])
+            self.c.load_program([11003, 43000])
         self.assertEqual(self.c.state, 'empty')
