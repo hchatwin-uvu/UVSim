@@ -38,7 +38,7 @@ These extend the existing Milestone 4 use cases.
 
 ## UC-28 — Edit expanded program
 **Actor:** Student.
-1. User adds, modifies, cuts, copies, or pastes six-digit words at three-digit addresses.
+1. User adds, modifies, deletes, cuts, copies, or pastes six-digit words in an editor displaying three-digit addresses.
 2. Editor validates words and checks the 250-entry capacity.
 3. Invalid entries are indicated for correction where supported.
 **Alternatives:** A 251st entry or invalid clipboard data is rejected without partial changes.
