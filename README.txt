@@ -1,4 +1,4 @@
-UVSim - Milestone 4 (WP-1 and WP-2 program documentation)
+UVSim - BasicML Simulator (Milestone 5)
 
 INSTALLATION
 Requires Python 3.10 or newer with Tcl/Tk (tkinter). No pip packages are needed.
@@ -111,18 +111,28 @@ Native file dialogs keep operating-system styling. Custom contrast is the
 user's choice. Open, Save, Save As, and Run are disabled during execution.
 
 BASICML FILE FORMAT
-One signed four-digit word per line, e.g. +1007, -0005, +4300. Maximum 100 words.
-Blank lines and surrounding whitespace are ignored. Words load consecutively
-starting at address 00. Unused memory and the accumulator reset to zero.
-Instruction words must be nonnegative; the opcode is the first two digits and
-the operand is an address from 00 to 99. Supported operations:
-  10 READ   11 WRITE   20 LOAD   21 STORE
-  30 ADD    31 SUBTRACT   32 DIVIDE   33 MULTIPLY
-  40 BRANCH   41 BRANCHNEG   42 BRANCHZERO   43 HALT
-Arithmetic overflow retains the lowest four magnitude digits and the sign:
-12345 becomes 2345; -12345 becomes -2345. Division truncates toward zero.
-Division by zero and invalid instructions produce a GUI error. READ rejects
-values outside -9999 to 9999. No register display or step mode is provided.
+
+Milestone 5 uses one signed six-digit word per line, such as +010007, -000005, or +043000. Programs may contain up to 250 words, stored at addresses 000 through 249.
+
+Blank lines and surrounding whitespace are ignored. Words load consecutively starting at address 000. Unused memory and the accumulator initialize to zero.
+
+Instruction words must be nonnegative. The first three digits represent the opcode, and the final three digits represent the operand or memory address.
+
+Supported operations:
+  010 READ          011 WRITE
+  020 LOAD          021 STORE
+  030 ADD           031 SUBTRACT
+  032 DIVIDE        033 MULTIPLY
+  040 BRANCH        041 BRANCHNEG
+  042 BRANCHZERO    043 HALT
+
+Memory-address operands must be between 000 and 249. Instructions referencing addresses outside this range are rejected. HALT ignores its operand field.
+
+Arithmetic results use six magnitude digits. Overflow retains the lowest six magnitude digits and preserves the sign. Division truncates toward zero.
+
+READ accepts integer values from -999999 through 999999. Division by zero, invalid instructions, and invalid memory addresses produce errors.
+
+The expanded memory and six-digit word format are implemented in the Milestone 5 backend. GUI support and legacy-file conversion are being integrated separately.
 
 SAMPLES AND GRADING CHECKS
 Included programs are in programs/, but files may be opened from any accessible
