@@ -6,18 +6,15 @@ The application retains one execution engine and separates document state from m
 
 ```mermaid
 classDiagram
-    UVSimApp --> EditorPanel : selected tab editor
+    UVSimApp --> EditorPanel : manages tab editors
     UVSimApp --> FileActions : file commands
     UVSimApp --> IOPanel : input/output
     UVSimApp --> SimulatorController : shared execution
-    UVSimApp --> DocumentState : manages tabs
-    FileActions --> ProgramStore : save/load
-    FileActions --> LegacyConverter : convert old files
-    DocumentState --> EditorPanel : independent source
-    SimulatorController --> UVSim : one machine
-    UVSim --> Word : 250 registers
-    ProgramStore --> Word : validate words
-    LegacyConverter --> Word : new format
+    FileActions --> ProgramStore : load/save
+    SimulatorController --> ControllerState : tracks state
+    SimulatorController --> UVSim : controls machine
+    UVSim --> Word : memory words
+    ProgramStore --> Word : validates words
     UVSimApp --> Theme : applies colors
 ```
 
