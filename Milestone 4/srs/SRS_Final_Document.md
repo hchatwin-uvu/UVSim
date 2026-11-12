@@ -190,21 +190,9 @@ The system shall delete selected rows and renumber remaining entries consecutive
 
 Use cases: UC-18.
 
-### FR-31 | Cut entries
+### FR-31 | Clipboard operations
 
-The system shall allow users to cut one or multiple selected editor entries through the Cut control or keyboard shortcut, placing them on the clipboard and removing them from the editor.
-
-Use cases: UC-19.
-
-### FR-31a | Copy entries
-
-The system shall allow users to copy one or multiple selected editor entries through the Copy control or keyboard shortcut without changing the editor contents.
-
-Use cases: UC-19.
-
-### FR-31b | Paste entries
-
-The system shall allow users to paste one or multiple clipboard entries through the Paste control or keyboard shortcut and shall reject invalid clipboard words without modifying the editor.
+The system shall support Cut, Copy, and Paste of one or multiple entries through editor controls and keyboard shortcuts; reject invalid clipboard words without modifying the editor.
 
 Use cases: UC-19.
 
