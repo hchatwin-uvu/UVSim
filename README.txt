@@ -49,24 +49,7 @@ CONTROLS AND WORKFLOW
    are shown: 12 becomes 0012 and -5 becomes -0005. HALT, Stop, and errors retain
    output; starting a fresh run clears it. Opening another source retains prior
    results until Run starts its new execution.
-11. Resize/close: controls expand with the window. Closing cancels execution.
-
-COLOR CONFIGURATION
-Edit theme.ini beside main.py, save the file, and restart UVSim:
-  [theme]
-  primary = #4C721D
-  off_color = #FFFFFF
-Both colors must use # followed by six hexadecimal digits (0-9, A-F).
-Primary colors the header, buttons, separators, and selections; off_color colors
-surfaces and button/header text. Body text stays dark. These defaults are the
-supplied UVU green and white. No reinstall or compilation is needed.
-The file is located beside the application even when launched from another
-working directory. Missing/unreadable files, malformed INI, missing keys, or
-invalid colors restore the entire UVU default palette without crashing.
-Native file dialogs keep operating-system styling. Custom contrast is the
-user's choice. Open, Save, Save As, and Run are disabled during execution.
-
-PROGRAM EDITOR (MILESTONE 4 WP-2)
+10a. PROGRAM EDITOR CONTROLS (MILESTONE 4 WP-2)
 The program editor displays one BasicML instruction or data value per row, with
 its address in the range 00-99. The editor supports up to 100 entries. The
 editor is integrated beside output below the shared READ input controls.
@@ -108,6 +91,24 @@ While a program is running or waiting for READ input, modifying the editor is
 disabled; Copy remains available. Run validates the current editor words and
 starts fresh without reopening the file. Execution never changes editor source.
 You may also build a program with Add before opening any file.
+
+
+11. Resize/close: controls expand with the window. Closing cancels execution.
+
+COLOR CONFIGURATION
+Edit theme.ini beside main.py, save the file, and restart UVSim:
+  [theme]
+  primary = #4C721D
+  off_color = #FFFFFF
+Both colors use standard RGB hexadecimal values in #RRGGBB format (six hexadecimal digits 0-9, A-F), not a proprietary UVSim color format.
+Primary colors the header, buttons, separators, and selections; off_color colors
+surfaces and button/header text. Body text stays dark. These defaults are the
+supplied green (#4C721D) and white (#FFFFFF). No reinstall or compilation is needed.
+The file is located beside the application even when launched from another
+working directory. Missing/unreadable files, malformed INI, missing keys, or
+invalid colors restore the entire default green-and-white palette without crashing.
+Native file dialogs keep operating-system styling. Custom contrast is the
+user's choice. Open, Save, Save As, and Run are disabled during execution.
 
 BASICML FILE FORMAT
 One signed four-digit word per line, e.g. +1007, -0005, +4300. Maximum 100 words.
