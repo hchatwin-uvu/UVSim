@@ -17,7 +17,7 @@ This document extends the Milestone 4 SRS. Existing requirements remain applicab
 
 ## New functional requirements
 - **FR-37 — Memory capacity:** The machine shall expose exactly 250 addressable registers, numbered 000 through 249.
-- **FR-38 — Word encoding:** The simulator shall accept signed six-digit words with three-digit instruction opcode and three-digit operand address, retaining legacy operation semantics with a leading zero in each opcode.
+- **FR-38 — Word encoding:** The simulator shall support signed six-digit BasicML words representing either instructions or data. Instruction words shall use a three-digit opcode followed by a three-digit operand. Existing BasicML operations shall retain their semantics using the expanded instruction format.
 - **FR-39 — Address validation:** Instructions referencing memory shall reject addresses outside 000–249.
 - **FR-40 — Arithmetic bounds:** Arithmetic shall use the new signed six-digit numeric limits and retain the existing overflow behavior at those limits.
 - **FR-41 — Legacy recognition:** The loader shall distinguish supported four-digit and six-digit file formats and reject mixed-format files.
