@@ -2,7 +2,28 @@
 
 from word import MAX_WORD, MIN_WORD, Word
 
-MEMORY_SIZE = 100
+MEMORY_SIZE = 250
+MAX_ADDRESS = MEMORY_SIZE - 1
+
+
+def check_address(address: int, purpose: str = "Memory address") -> None:
+    """Raise ValueError if address is not a memory register 000–249."""
+    if not 0 <= address < MEMORY_SIZE:
+        raise ValueError(
+            f"{purpose} {address:03d} is outside memory addresses "
+            f"000–{MAX_ADDRESS:03d}"
+        )
+
+
+def check_program_length(word_length: int) -> None:
+    """Raise ValueError if a program has more lines than memory registers.
+        250-line limit;
+    """
+    if word_length > MEMORY_SIZE:
+        raise ValueError(
+            f"Program contains more than {MEMORY_SIZE} words "
+            f"({word_length} given)."
+        )
 
 
 class UVSim:
@@ -17,8 +38,7 @@ class UVSim:
     def load(self, words: list[Word]) -> None:
         """Load a BasicML program into memory and reset the machine."""
 
-        if len(words) > MEMORY_SIZE:
-            raise ValueError("Program contains more than 100 words.")
+        check_program_length(len(words))
 
         # Word already enforces the range; only the type needs checking here
         for word in words:
@@ -34,7 +54,7 @@ class UVSim:
         self.instruction_register = Word(0)
         self.halted = False
 
-        # Load the program starting at memory location 00
+        # Load the program starting at memory location 000
         for address, word in enumerate(words):
             self.memory[address] = word
 
@@ -56,17 +76,14 @@ class UVSim:
             return
 
         address = self.instruction_counter
-        if not 0 <= address < MEMORY_SIZE:
-            raise ValueError(
-                "Instruction counter is outside memory addresses 00–99."
-            )
+        check_address(address, "Instruction counter")
 
         instruction = self.memory[address]
         self.instruction_register = instruction
 
         if instruction.value < 0:
             raise ValueError(
-                f"Negative instruction at address {address:02d}."
+                f"Negative instruction at address {address:03d}."
             )
 
         # Word owns the digit layout; never split the raw value here
@@ -83,7 +100,15 @@ class UVSim:
         handler = handlers.get(opcode)
         if handler is None:
             raise ValueError(
-                f"Invalid opcode {opcode:02d} at address {address:02d}."
+                f"Invalid opcode {opcode:03d} at address {address:03d}."
+            )
+
+        # Reject 250–999 before any handler or deferred READ/WRITE can use it.
+        if opcode != 43 and not 0 <= operand < MEMORY_SIZE:
+            raise ValueError(
+                f"Instruction {instruction.format()} at address {address:03d} "
+                f"references address {operand:03d}, outside "
+                f"000–{MAX_ADDRESS:03d}"
             )
 
         if defer_io and opcode == 10:
@@ -98,7 +123,7 @@ class UVSim:
 
         try:
             if opcode == 10:
-                print("Enter a word (-9999 to 9999): ", end="", flush=True)
+                print(f"Enter a word ({MIN_WORD} to {MAX_WORD}): ", end="", flush=True)
                 handler(self, operand, sys.stdin)
             else:
                 handler(self, operand)

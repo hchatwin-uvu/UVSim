@@ -1,16 +1,19 @@
 """BasicML arithmetic handlers; results stay in the accumulator."""
 
-from uvsim import MEMORY_SIZE, UVSim
+from uvsim import UVSim, check_address
+from word import MAX_WORD
+
+# Results keep only the low six digits
+_WORD_MODULUS = MAX_WORD + 1
 
 
 def _operand_value(machine: UVSim, operand: int) -> int:
-    if not 0 <= operand < MEMORY_SIZE:
-        raise ValueError("Arithmetic operand address must be between 00 and 99.")
+    check_address(operand, "Arithmetic operand address")
     return machine.memory[operand].value
 
 
 def _store_result(machine: UVSim, result: int) -> None:
-    magnitude = abs(result) % 10000
+    magnitude = abs(result) % _WORD_MODULUS
     machine.accumulator = -magnitude if result < 0 else magnitude
 
 
@@ -37,6 +40,7 @@ def multiply(machine: UVSim, operand: int) -> None:
     _store_result(machine, machine.accumulator * _operand_value(machine, operand))
 
 
+# Keys are the three-digit operation codes 030-033
 ARITHMETIC_HANDLERS = {
     30: add,
     31: subtract,

@@ -1,5 +1,8 @@
 """Person 1's proposed area: BasicML file loading and validation."""
 
+from uvsim import check_program_length
+from word import Word
+
 
 def load_program(path: str) -> list[int]:
     """Load and validate a BasicML program from a text file."""
@@ -14,24 +17,17 @@ def load_program(path: str) -> list[int]:
             if not word:
                 continue
 
-            # BasicML words must be signed and exactly four digits
-            if len(word) != 5 or word[0] not in "+-" or not word[1:].isdigit():
+            # Word owns the six-digit format and range rules
+            try:
+                word = Word.parse(word)
+            except ValueError as error:
                 raise ValueError(
-                    f"Invalid BasicML word on line {line_number}: {word}"
+                    f"Invalid BasicML word on line {line_number}: {error}"
                 )
 
-            value = int(word)
+            words.append(word.value)
 
-            # A BasicML word can only be from -9999 to +9999
-            if value < -9999 or value > 9999:
-                raise ValueError(
-                    f"BasicML word out of range on line {line_number}: {word}"
-                )
-
-            words.append(value)
-
-            # UVSim only has 100 memory locations
-            if len(words) > 100:
-                raise ValueError("Program contains more than 100 words.")
+            # 250 memory
+            check_program_length(len(words))
 
     return words
