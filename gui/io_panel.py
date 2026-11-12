@@ -5,6 +5,7 @@ from tkinter import ttk
 from collections.abc import Callable, Sequence
 
 from operations.io_memory import format_word
+from word import MIN_WORD, MAX_WORD
 
 
 class IOPanel:
@@ -22,7 +23,7 @@ class IOPanel:
         # READ input
         ttk.Label(
             self.frame,
-            text="READ input (-9999 to 9999)"
+            text=f"READ input ({MIN_WORD} to {MAX_WORD})"
         ).pack(anchor="w")
 
         input_frame = ttk.Frame(self.frame)

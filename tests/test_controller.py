@@ -1,5 +1,6 @@
 """Focused regressions for the controller bugs found during GUI integration."""
 from pathlib import Path
+import tempfile
 import unittest
 from controller import SimulatorController
 from loader import load_program
@@ -16,9 +17,16 @@ class ControllerTests(unittest.TestCase):
         self.c = SimulatorController()
 
     def load(self, name):
-        # Files are read outside the controller, as the GUI does (TODO-4)
+        # Native six-digit fixtures; legacy conversion belongs to Task 2.
+        from tests.test_regression import PROGRAMS
         try:
-            values = load_program(str(ROOT / 'programs' / name))
+            if Path(name).stem in PROGRAMS:
+                with tempfile.TemporaryDirectory() as folder:
+                    path = Path(folder) / name
+                    path.write_text("\n".join(PROGRAMS[path.stem].split()) + "\n")
+                    values = load_program(path)
+            else:
+                values = load_program(str(ROOT / 'programs' / name))
         except (OSError, ValueError):
             return False
         return self.c.load_program([Word(value) for value in values])
