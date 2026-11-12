@@ -22,17 +22,17 @@ classDiagram
 
 | Component | Source | Responsibility / Milestone 5 impact |
 |---|---|---|
-| UVSimApp | `gui/app.py` | Owns main window, tab selection, execution interlock, toolbar, status, shared controller and I/O panel. |
+| UVSimApp | `gui/app.py` | Owns the main window, multiple program tabs, per-tab document state, execution interlock, toolbar, status display, shared controller, and I/O panel. |
 | EditorPanel | `gui/editor_panel.py` | Edits source words, displays addresses 000–249, validates six-digit words, limits entries to 250. |
 | FileActions | `gui/file_actions.py` | Opens/saves selected document, coordinates conversion destination and error presentation. |
 | IOPanel | `gui/io_panel.py` | Presents READ and WRITE UI using new numeric limits and formatting. |
 | SimulatorController | `controller.py` | Controls shared engine states, execution, stop, READ wait, and stepping if supported. |
+| ControllerState | `controller.py` | Defines the execution states used by SimulatorController. |
 | UVSim | `uvsim.py` | Executes operations with 250 memory registers and six-digit machine words. |
 | Word | `word.py` | Parses, formats, and validates six-digit words; instruction opcode and address are three digits each. |
 | ProgramStore | `program_store.py` | Loads/saves validated program contents and tracks file errors. |
 | Theme | `theme_config.py` | Stores standard RGB hexadecimal palette values. |
 | LegacyConverter | proposed `converter.py` | Converts supported legacy words, rejects mixed formats, preserves source, writes converted output. |
-| DocumentState | proposed conceptual model | Stores independent filename, source contents and dirty flag per tab; actual implementation may use a different name or structure. |
 
 ## State and invariants
 - Exactly one SimulatorController/UVSim execution session exists per application instance.
@@ -45,4 +45,4 @@ classDiagram
 - Signed word magnitude is limited to six decimal digits, with existing overflow semantics retained.
 
 ## Final implementation audit
-After Tasks 1–3 merge, replace conceptual class names with actual class names, copy actual method signatures from source, update the diagram accordingly, and confirm ownership and dependencies. The Milestone 4 class definitions remain the historical baseline.
+The integrated GUI implementation has been reviewed, and the class diagram reflects the classes currently present in the source code. The remaining converter-related documentation and dependencies must be verified after the conversion implementation is integrated. The Milestone 4 class definitions remain the historical baseline.
