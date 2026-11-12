@@ -12,8 +12,10 @@ class TestParseWord(unittest.TestCase):
 
     def test_accepts_zero_and_boundary_values(self):
         self.assertEqual(parse_word("0"), 0)
-        self.assertEqual(parse_word("-9999"), -9999)
-        self.assertEqual(parse_word("9999"), 9999)
+        self.assertEqual(parse_word("-999999"), -999999)
+        self.assertEqual(parse_word("999999"), 999999)
+        self.assertEqual(parse_word("10000"), 10000)
+        self.assertEqual(parse_word("-10000"), -10000)
 
     def test_rejects_blank_input(self):
         with self.assertRaisesRegex(ValueError, "Input cannot be blank."):
@@ -26,9 +28,9 @@ class TestParseWord(unittest.TestCase):
                     parse_word(value)
 
     def test_rejects_out_of_range_values(self):
-        for value in ["-10000", "10000", "+10000"]:
+        for value in ["-1000000", "1000000", "+1000000"]:
             with self.subTest(value=value):
-                with self.assertRaisesRegex(ValueError, "Input must be between -9999 and 9999."):
+                with self.assertRaisesRegex(ValueError, "Input must be between -999999 and 999999."):
                     parse_word(value)
 
 

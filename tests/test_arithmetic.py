@@ -89,9 +89,22 @@ class ArithmeticTests(unittest.TestCase):
         for handler, accumulator, value, expected in (
             (add, MAX_WORD, 1, 0), (add, MIN_WORD, -1, 0),
             (subtract, MIN_WORD, 1, 0), (subtract, MAX_WORD, -1, 0),
-            (multiply, MAX_WORD, 2, 9998), (multiply, MIN_WORD, 2, -9998),
-            (multiply, 2469, 5, 2345), (multiply, -2469, 5, -2345),
+            (multiply, MAX_WORD, 2, 999998), (multiply, MIN_WORD, 2, -999998),
+            (multiply, 246913, 5, 234565), (multiply, -246913, 5, -234565),
             (multiply, MAX_WORD, MAX_WORD, 1),
+            (add, 999990, 20, 10), (subtract, -999990, 20, -10),
+        ):
+            with self.subTest(handler=handler.__name__, accumulator=accumulator):
+                self.machine.accumulator = accumulator
+                self.machine.memory[self.operand] = Word(value)
+                handler(self.machine, self.operand)
+                self.assertEqual(self.machine.accumulator, expected)
+
+    def test_results_beyond_old_four_digit_limit_now_succeed(self) -> None:
+        for handler, accumulator, value, expected in (
+            (add, 9999, 1, 10000), (subtract, -9999, 1, -10000),
+            (multiply, 9999, 2, 19998), (multiply, 2469, 5, 12345),
+            (multiply, 999, 999, 998001), (divide, 500000, 2, 250000),
         ):
             with self.subTest(handler=handler.__name__, accumulator=accumulator):
                 self.machine.accumulator = accumulator
@@ -110,7 +123,7 @@ class ArithmeticTests(unittest.TestCase):
 
     def test_invalid_addresses_preserve_accumulator(self) -> None:
         for handler in (add, subtract, divide, multiply):
-            for address in (-1, 100):
+            for address in (-1, 250, 999):
                 with self.subTest(handler=handler.__name__, address=address):
                     self.machine.accumulator = 12
                     with self.assertRaisesRegex(ValueError, "address"):
@@ -119,13 +132,13 @@ class ArithmeticTests(unittest.TestCase):
 
     def test_opcode_mapping_and_boundary_addresses(self) -> None:
         for opcode, expected in ((30, 15), (31, 9), (32, 4), (33, 36)):
-            for address in (0, 99):
+            for address in (0, 99, 100, 249):
                 with self.subTest(opcode=opcode, address=address):
                     self.machine.accumulator = 12
                     self.machine.memory[address] = Word(3)
                     memory_before = self.machine.memory.copy()
                     self.machine.instruction_counter = 8
-                    self.machine.instruction_register = Word(opcode * 100 + address)
+                    self.machine.instruction_register = Word(opcode * 1000 + address)
                     instruction = self.machine.instruction_register
                     ARITHMETIC_HANDLERS[instruction.opcode](self.machine, instruction.operand)
                     self.assertEqual(self.machine.accumulator, expected)
