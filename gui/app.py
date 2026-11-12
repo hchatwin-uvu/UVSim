@@ -1,6 +1,8 @@
 """WP-1: Tkinter window composed against the shared controller contract."""
+import os
+from pathlib import Path
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 from controller import SimulatorController
 from gui.io_panel import IOPanel
 from gui.editor_panel import EditorPanel
@@ -22,6 +24,9 @@ class UVSimApp:
         self._timer = None
         self._closed = False
         self._local_error = None
+        self.documents = {}
+        self._active_tab = None
+        self._untitled_count = 0
         self.theme = theme if theme is not None else load_theme()
         root.title("UVSim | BasicML simulator")
         root.geometry("1100x720")
@@ -35,6 +40,10 @@ class UVSimApp:
         ttk.Label(header, text="BasicML simulator", style="Brand.TLabel").pack(anchor="w")
         toolbar = ttk.Frame(frame)
         toolbar.pack(fill="x")
+        self.new_button = ttk.Button(toolbar, text="New", command=self.new_document)
+        self.new_button.pack(side="left", padx=(0, 8))
+        self.close_tab_button = ttk.Button(toolbar, text="Close tab", command=self.close_document)
+        self.close_tab_button.pack(side="left", padx=(0, 8))
         self.open_button = ttk.Button(toolbar, text="Open file", command=self.open_file)
         self.open_button.pack(side="left")
         self.save_button = ttk.Button(toolbar, text="Save", command=self.save_file)
@@ -65,9 +74,10 @@ class UVSimApp:
         editor_parent.grid(row=0, column=0, sticky="nsew")
         output_parent = ttk.Frame(workspace)
         output_parent.grid(row=0, column=1, sticky="nsew")
-        self.editor = EditorPanel(editor_parent, self._editor_changed)
-        self.file_actions = FileActions(
-            root, ProgramStore(), self.editor, self._file_status_changed)
+        self.notebook = ttk.Notebook(editor_parent)
+        self.notebook.pack(fill="both", expand=True)
+        self._create_document()
+        self.notebook.bind("<<NotebookTabChanged>>", self._tab_changed)
         self.panel = panel_factory(panel_parent, self.submit_input, output_parent=output_parent)
         apply_theme(root, self.theme)
         frame.bind("<Configure>", self._resize_labels)
@@ -101,18 +111,117 @@ class UVSimApp:
             self._local_error = f"Unable to complete operation: {error}"
             return False
 
-    def open_file(self):
-        if self.controller.state in ("running", "waiting_input"):
+    @property
+    def execution_active(self):
+        return self.controller.state in ("running", "waiting_input")
+
+    def _create_document(self, entries=(), path=None):
+        frame = ttk.Frame(self.notebook)
+        tab = str(frame)
+        editor = EditorPanel(frame, self._editor_changed)
+        editor.set_entries(entries)
+        self._untitled_count += 1
+        name = f"Untitled {self._untitled_count}"
+        actions = FileActions(
+            self.root, ProgramStore(), editor, self._file_status_changed,
+            path=path, document_name=name,
+            validate_destination=lambda destination: self._validate_destination(tab, destination))
+        self.documents[tab] = (frame, editor, actions, name)
+        self.notebook.add(frame, text=Path(path).name if path else self.documents[tab][3])
+        self._select_document(tab)
+        return tab
+
+    def _select_document(self, tab):
+        if self._active_tab == tab:
             return
-        self.file_actions.open()
+        if self.execution_active and self._active_tab is not None:
+            self.notebook.select(self._active_tab)
+            return
+        if self._active_tab in self.documents:
+            # Commit a pending cell edit before hiding its document.
+            self.editor.finish_edit()
+        self._active_tab = tab
+        _, self.editor, self.file_actions, _ = self.documents[tab]
+        self.notebook.select(tab)
+        if hasattr(self, "panel"):
+            self.controller.clear()
+            self.panel.refresh("empty", [])
+            if hasattr(self.panel, "input_text"):
+                self.panel.input_text.set("")
+            self._local_error = None
+            self.refresh()
+
+    def _tab_changed(self, event=None):
+        tab = self.notebook.select()
+        if tab in self.documents:
+            self._select_document(tab)
+
+    @staticmethod
+    def _path_key(path):
+        return os.path.normcase(os.path.realpath(path))
+
+    def _validate_destination(self, owner, path):
+        key = self._path_key(path)
+        for tab, (_, _, actions, _) in self.documents.items():
+            if tab != owner and actions.current_path and self._path_key(actions.current_path) == key:
+                raise ValueError("That file is open in another tab. Choose a different filename.")
+
+    def new_document(self):
+        if not self.execution_active:
+            self._create_document()
+            self.refresh()
+
+    def close_document(self):
+        if self.execution_active:
+            return False
+        if not self.confirm_discard():
+            self.refresh()
+            return False
+        tab = self._active_tab
+        frame = self.documents.pop(tab)[0]
+        self.notebook.forget(tab)
+        frame.destroy()
+        self._active_tab = None
+        if self.documents:
+            self._select_document(next(iter(self.documents)))
+        else:
+            self._create_document()
         self.refresh()
+        return True
+
+    def open_file(self):
+        if self.execution_active:
+            return
+        try:
+            path = filedialog.askopenfilename(
+                parent=self.root, title="Open BasicML program",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+            if path:
+                self.load_file(path)
+        except tk.TclError as error:
+            self._file_status_changed(f"Cannot open file picker: {error}")
+            self.refresh()
 
     def load_file(self, path):
-        if self.controller.state in ("running", "waiting_input"):
+        if self.execution_active:
             return False
-        accepted = self.file_actions.open_path(path)
+        # Reopening an existing path focuses its unsaved document, never reloads it.
+        key = self._path_key(path)
+        for tab, (_, _, actions, _) in self.documents.items():
+            if actions.current_path and self._path_key(actions.current_path) == key:
+                self._select_document(tab)
+                self.refresh()
+                return True
+        try:
+            entries = self.file_actions.store.load_source(path)
+        except (OSError, ValueError) as error:
+            self._file_status_changed(f"Unable to open program: {error}")
+            self.refresh()
+            return False
+        self._create_document(entries, path)
+        self._file_status_changed(f"Opened {path}")
         self.refresh()
-        return accepted
+        return True
 
     def save_file(self):
         if self.controller.state in ("running", "waiting_input"):
@@ -141,11 +250,15 @@ class UVSimApp:
         """Keep stale execution errors from hiding the editor's current feedback."""
         self._local_error = None
         self.status.set("Program edited. Run uses the current editor contents.")
+        self._update_tab_titles()
 
     def _file_status_changed(self, message):
         self._local_error = message
 
-    def confirm_discard(self):
+    def confirm_discard(self, all_documents=False):
+        if all_documents:
+            return all(actions.confirm_discard()
+                       for _, _, actions, _ in self.documents.values())
         return self.file_actions.confirm_discard()
 
     def stop(self):
@@ -160,12 +273,24 @@ class UVSimApp:
         self.refresh()
         return bool(accepted)
 
+    def _update_tab_titles(self):
+        for tab, (_, editor, actions, untitled) in self.documents.items():
+            name = Path(actions.current_path).name if actions.current_path else untitled
+            # Do not finish edits here: on_change may be called by an active edit.
+            dirty = editor.has_changes
+            self.notebook.tab(tab, text=name + (" *" if dirty else ""))
+
     def refresh(self):
         state = self.controller.state
         active = state in ("running", "waiting_input")
         self.open_button.configure(state="disabled" if active else "normal")
         self.save_button.configure(state="disabled" if active else "normal")
         self.save_as_button.configure(state="disabled" if active else "normal")
+        self.new_button.configure(state="disabled" if active else "normal")
+        self.close_tab_button.configure(state="disabled" if active else "normal")
+        for tab in self.documents:
+            self.notebook.tab(tab, state="disabled" if active and tab != self._active_tab else "normal")
+        self._update_tab_titles()
         can_run = not active
         self.run_button.configure(state="normal" if can_run else "disabled")
         self.stop_button.configure(state="normal" if active else "disabled")
@@ -177,7 +302,10 @@ class UVSimApp:
     def close(self):
         if self._closed:
             return
-        if not self.confirm_discard():
+        # Keep every tab intact until all prompts have succeeded.
+        # During execution the active editor is read-only, but can still be saved.
+        if not self.confirm_discard(all_documents=True):
+            self.refresh()
             return
         self._closed = True
         if self._timer is not None:

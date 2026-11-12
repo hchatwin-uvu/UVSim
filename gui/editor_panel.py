@@ -3,12 +3,13 @@ import tkinter as tk
 from tkinter import ttk
 from collections.abc import Callable, Sequence
 from word import Word
+from uvsim import MEMORY_SIZE
 
-MAX_ENTRIES = 100
+MAX_ENTRIES = MEMORY_SIZE
 
 
 class EditorPanel:
-    """Display and edit up to 100 BasicML words, at addresses 00-99."""
+    """Display and edit up to 250 BasicML words, at addresses 000-249."""
 
     def __init__(self, parent, on_change: Callable[[], None]) -> None:
         self.on_change = on_change
@@ -21,7 +22,7 @@ class EditorPanel:
 
         self.frame = ttk.Frame(parent)
         self.frame.pack(fill="both", expand=True)
-        ttk.Label(self.frame, text="Program editor (addresses 00-99)").pack(anchor="w")
+        ttk.Label(self.frame, text="Program editor (addresses 000-249)").pack(anchor="w")
         toolbar = ttk.Frame(self.frame)
         toolbar.pack(fill="x", pady=5)
         self.add_button = ttk.Button(toolbar, text="Add", command=self.add_entry)
@@ -66,7 +67,7 @@ class EditorPanel:
         """Replace editor content, clear unsaved flag, and renumber addresses."""
         words = list(words)
         if len(words) > MAX_ENTRIES:
-            raise ValueError("Program cannot exceed 100 entries (00-99).")
+            raise ValueError("Program cannot exceed 250 entries (000-249).")
         if any(not isinstance(w, Word) for w in words):
             raise TypeError("set_words expects Word objects.")
         self.set_entries([w.format() for w in words])
@@ -79,7 +80,7 @@ class EditorPanel:
         """
         entries = list(entries)
         if len(entries) > MAX_ENTRIES:
-            raise ValueError("Program cannot exceed 100 entries (00-99).")
+            raise ValueError("Program cannot exceed 250 entries (000-249).")
         if any(not isinstance(entry, str) for entry in entries):
             raise TypeError("set_entries expects strings.")
         self._cancel_edit()
@@ -91,7 +92,7 @@ class EditorPanel:
             try:
                 Word.parse(entry)
             except ValueError as error:
-                self.status.set(f"Address {index:02d} (line {index+1}): {error}")
+                self.status.set(f"Address {index:03d} (line {index+1}): {error}")
                 break
 
     def get_words(self) -> list[Word]:
@@ -102,14 +103,23 @@ class EditorPanel:
             try:
                 result.append(Word.parse(text))
             except ValueError as error:
-                raise ValueError(f"Invalid entry at address {i:02d} "
+                raise ValueError(f"Invalid entry at address {i:03d} "
                                  f"(line {i+1}): {error}") from error
         return result
 
     @property
     def is_dirty(self) -> bool:
         self._finish_edit()
+        return self.has_changes
+
+    @property
+    def has_changes(self) -> bool:
+        """Whether committed edits differ from the saved document."""
         return self._entries != self._saved_entries
+
+    def finish_edit(self) -> None:
+        """Commit the active cell before switching documents or executing."""
+        self._finish_edit()
 
     def mark_saved(self) -> None:
         self._finish_edit()
@@ -125,11 +135,11 @@ class EditorPanel:
         if not self._enabled:
             return
         if len(self._entries) >= MAX_ENTRIES:
-            self.status.set("Cannot add: program already has 100 entries.")
+            self.status.set("Cannot add: program already has 250 entries.")
             return
         selected = self._selected_indices()
         index = selected[0] if selected else len(self._entries)
-        self._entries.insert(index, "+0000")
+        self._entries.insert(index, Word(0).format())
         self._changed([index])
 
     def delete_selected(self) -> None:
@@ -173,7 +183,7 @@ class EditorPanel:
             return
         lines = [line.strip() for line in content.splitlines()]
         if len(self._entries) + len(lines) > MAX_ENTRIES:
-            self.status.set("Cannot paste: result would exceed 100 entries (00-99).")
+            self.status.set("Cannot paste: result would exceed 250 entries (000-249).")
             return
         for n, line in enumerate(lines, 1):
             try:
@@ -217,7 +227,7 @@ class EditorPanel:
             except ValueError:
                 tags = ("invalid",)
             self.tree.insert("", "end", iid=str(i),
-                             values=(f"{i:02d}", text), tags=tags)
+                             values=(f"{i:03d}", text), tags=tags)
         kept = [str(i) for i in selected if 0 <= i < len(self._entries)]
         if kept:
             self.tree.selection_set(kept)
@@ -230,9 +240,9 @@ class EditorPanel:
             try:
                 Word.parse(text)
             except ValueError as error:
-                self.status.set(f"Address {i:02d} (line {i+1}): {error}")
+                self.status.set(f"Address {i:03d} (line {i+1}): {error}")
                 return
-        self.status.set(f"{len(self._entries)}/100 entries. Unsaved edits.")
+        self.status.set(f"{len(self._entries)}/250 entries. Unsaved edits.")
 
     def _update_buttons(self) -> None:
         state = "normal" if self._enabled else "disabled"

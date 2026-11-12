@@ -12,12 +12,15 @@ class FileActions:
     """File commands the window places on its toolbar."""
 
     def __init__(self, root, store: ProgramStore, editor: EditorPanel,
-                 on_status: Callable[[str], None]) -> None:
+                 on_status: Callable[[str], None], *, path=None,
+                 validate_destination=None, document_name="Untitled") -> None:
         self.root = root
         self.store = store
         self.editor = editor
         self.on_status = on_status
-        self._current_path: str | None = None
+        self._current_path = os.fspath(path) if path is not None else None
+        self.validate_destination = validate_destination
+        self.document_name = document_name
 
     @property
     def current_path(self) -> str | None:
@@ -59,6 +62,8 @@ class FileActions:
         if self._current_path is None:
             return self.save_as()
         try:
+            if self.validate_destination:
+                self.validate_destination(self._current_path)
             self.store.save(self._current_path, self.editor.get_words())
         except (OSError, ValueError) as error:
             self.on_status(f"Unable to save program: {error}")
@@ -82,6 +87,8 @@ class FileActions:
         if not path:
             return False
         try:
+            if self.validate_destination:
+                self.validate_destination(path)
             self.store.save(path, self.editor.get_words())
         except (OSError, ValueError) as error:
             self.on_status(f"Unable to save program: {error}")
@@ -98,7 +105,7 @@ class FileActions:
             return True
         answer = messagebox.askyesnocancel(
             "Save unsaved edits?",
-            "Save your changes before continuing?\n"
+            f"Save changes to {self.current_path or self.document_name} before continuing?\n"
             "Yes: Save   No: Discard   Cancel: Keep editing",
             parent=self.root,
             default="cancel",

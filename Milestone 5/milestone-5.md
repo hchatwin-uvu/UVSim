@@ -73,23 +73,33 @@ and relevant files in `tests/`.
 `editor_panel.py`, and `theme.py`), `program_store.py`, `controller.py`, and
 relevant files in `tests/`.
 
-- [ ] Add tabs for multiple open files in one application instance.
-- [ ] Keep each document's program contents, filename, and unsaved-change state
+- [x] Add tabs for multiple open files in one application instance.
+- [x] Keep each document's program contents, filename, and unsaved-change state
       independent.
-- [ ] Support switching, editing, saving, and executing documents in any order
+- [x] Support switching, editing, saving, and executing documents in any order
       when execution is inactive.
-- [ ] Run the selected document's current contents through the shared engine.
-- [ ] Disable document switching while running, waiting for input, or stepping;
+- [x] Run the selected document's current contents through the shared engine.
+- [x] Disable document switching while running, waiting for input, or stepping;
       restore switching when execution finishes or is manually stopped.
-- [ ] Handle unsaved edits when closing a tab or the application, preserving
+- [x] Handle unsaved edits when closing a tab or the application, preserving
       data if saving fails or the user cancels.
-- [ ] Update the editor for six-digit words, three-digit addresses, and the
+- [x] Update the editor for six-digit words, three-digit addresses, and the
       250-line limit in coordination with Task 1.
 - [ ] Add conversion controls and save dialogs using Task 2's backend interface;
       handle cancellation and display validation/save errors clearly.
-- [ ] Test document isolation, tab switching, save destinations, unsaved-change
+- [x] Test document isolation, tab switching, save destinations, unsaved-change
       handling, execution restrictions, and running different tabs in sequence.
-- [ ] Test conversion UI integration and six-digit editor validation.
+- [x] Test six-digit editor validation.
+- [ ] Test conversion UI integration after Task 2 is available.
+
+### Task 3 implementation status — November 12, 2026
+
+Implemented on `feature/milestone-5-gui`; all 136 tests pass with
+`python -m unittest discover -s tests`. Conversion controls and end-to-end
+conversion testing remain pending Task 2's backend. The existing app has
+Run/Stop rather than
+an interactive stepping mode; switching is locked while running or waiting for
+READ input.
 
 ## Task 4 — Documentation and Milestone 4 feedback fixes
 
