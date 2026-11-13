@@ -46,13 +46,17 @@ class UVSimApp:
         self.close_tab_button.pack(side="left", padx=(0, 8))
         self.open_button = ttk.Button(toolbar, text="Open file", command=self.open_file)
         self.open_button.pack(side="left")
+        self.convert_button = ttk.Button(toolbar, text="Convert legacy file", command=self.convert_legacy_file)
+        self.convert_button.pack(side="left", padx=(8, 0))
         self.save_button = ttk.Button(toolbar, text="Save", command=self.save_file)
         self.save_button.pack(side="left", padx=(8, 0))
         self.save_as_button = ttk.Button(toolbar, text="Save As", command=self.save_file_as)
         self.save_as_button.pack(side="left", padx=(8, 0))
-        self.run_button = ttk.Button(toolbar, text="Run", command=self.start)
-        self.run_button.pack(side="left", padx=8)
-        self.stop_button = ttk.Button(toolbar, text="Stop", command=self.stop)
+        execution_toolbar = ttk.Frame(frame)
+        execution_toolbar.pack(fill="x", pady=(8, 0))
+        self.run_button = ttk.Button(execution_toolbar, text="Run", command=self.start)
+        self.run_button.pack(side="left", padx=(0, 8))
+        self.stop_button = ttk.Button(execution_toolbar, text="Stop", command=self.stop)
         self.stop_button.pack(side="left")
         self.filename = tk.StringVar(value="No program selected")
         self.filename_heading = ttk.Label(frame, text="Selected File Name", font=("Segoe UI", 10, "bold"))
@@ -229,6 +233,20 @@ class UVSimApp:
         self.file_actions.save()
         self.refresh()
 
+    def convert_legacy_file(self):
+        if self.execution_active:
+            return False
+        result = self.file_actions.convert_legacy(
+            lambda path: self._validate_destination(None, path))
+        if result is None:
+            self.refresh()
+            return False
+        path, words = result
+        self._create_document([word.format() for word in words], path)
+        self._file_status_changed(f"Converted and opened {path}")
+        self.refresh()
+        return True
+
     def save_file_as(self):
         if self.controller.state in ("running", "waiting_input"):
             return
@@ -284,6 +302,7 @@ class UVSimApp:
         state = self.controller.state
         active = state in ("running", "waiting_input")
         self.open_button.configure(state="disabled" if active else "normal")
+        self.convert_button.configure(state="disabled" if active else "normal")
         self.save_button.configure(state="disabled" if active else "normal")
         self.save_as_button.configure(state="disabled" if active else "normal")
         self.new_button.configure(state="disabled" if active else "normal")

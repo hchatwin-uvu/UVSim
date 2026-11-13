@@ -1,11 +1,14 @@
 """Open, Save, and Save As commands for the program editor."""
 import os
+from pathlib import Path
 import tkinter as tk
 from collections.abc import Callable
 from tkinter import filedialog, messagebox
 
 from gui.editor_panel import EditorPanel
 from program_store import ProgramStore
+from converter import convert_program, write_converted_program
+from word import Word
 
 
 class FileActions:
@@ -113,3 +116,33 @@ class FileActions:
         if answer is None:
             return False
         return self.save() if answer else True
+
+    def convert_legacy(self, validate_destination: Callable[[str], None]) -> tuple[str, list[Word]] | None:
+        """Convert a file on disk; leave every editor and the source untouched."""
+        try:
+            source = filedialog.askopenfilename(
+                parent=self.root, title="Convert a legacy four-digit BasicML file",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+            if not source:
+                return None
+            # Validate before asking for an output path. The backend owns all
+            # instruction/data conversion rules and the program-size limit.
+            with open(source, encoding="utf-8-sig") as stream:
+                words = convert_program(stream)
+            destination = filedialog.asksaveasfilename(
+                parent=self.root, title="Save converted six-digit program",
+                initialdir=str(Path(source).parent),
+                initialfile=f"{Path(source).stem}-six-digit.txt",
+                defaultextension=".txt",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+            if not destination:
+                return None
+            if (Path(source).resolve() == Path(destination).resolve()
+                    or (os.path.exists(destination) and os.path.samefile(source, destination))):
+                raise ValueError("Converted output must not overwrite the source file.")
+            validate_destination(destination)
+            write_converted_program(destination, words)
+            return destination, words
+        except (OSError, ValueError, tk.TclError) as error:
+            self.on_status(f"Unable to convert program: {error}")
+            return None

@@ -33,3 +33,18 @@ The program editor is now integrated beside output. Run uses current editor
 contents, including unsaved changes, and locks editing until execution stops.
 Open/Close offer Save, Discard, or Cancel. Save/Save As are connected, and
 malformed words load for correction before execution or saving.
+
+## Milestone 5 conversion
+
+Click **Convert legacy file** to select a saved four-digit program and save a
+six-digit copy. The result opens in a new tab. Cancellation and errors preserve
+your open documents; the source and files open in other tabs cannot be
+overwritten. Conversion uses the file on disk, not unsaved editor edits.
+
+The assignment treats any legacy word starting with a valid opcode as an
+instruction. For example, `+1111` becomes `+011011`; numeric `+5555` becomes
+`+005555`. This means some older sample data produce different outputs after
+conversion. See README.txt for details.
+
+Run conversion integration tests with
+`python -m unittest tests.test_conversion_ui -v`.
