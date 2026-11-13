@@ -85,21 +85,23 @@ relevant files in `tests/`.
       data if saving fails or the user cancels.
 - [x] Update the editor for six-digit words, three-digit addresses, and the
       250-line limit in coordination with Task 1.
-- [ ] Add conversion controls and save dialogs using Task 2's backend interface;
+- [x] Add conversion controls and save dialogs using Task 2's backend interface;
       handle cancellation and display validation/save errors clearly.
 - [x] Test document isolation, tab switching, save destinations, unsaved-change
       handling, execution restrictions, and running different tabs in sequence.
 - [x] Test six-digit editor validation.
-- [ ] Test conversion UI integration after Task 2 is available.
+- [x] Test conversion UI integration with Task 2's backend.
 
-### Task 3 implementation status — November 12, 2026
+### Task 3 implementation status — November 13, 2026
 
-Implemented on `feature/milestone-5-gui`; all 136 tests pass with
-`python -m unittest discover -s tests`. Conversion controls and end-to-end
-conversion testing remain pending Task 2's backend. The existing app has
-Run/Stop rather than
-an interactive stepping mode; switching is locked while running or waiting for
-READ input.
+Tabs and editing are merged. Conversion integration is implemented on
+`feature/milestone-5-conversion-ui`, using Task 2's converter without duplicating
+its rules. The GUI offers source/destination dialogs and opens the saved copy in
+a new tab. Cancellation, invalid input, write failures, source protection,
+open-document protection, and converted instructor-program execution are tested.
+All 155 tests pass with `python -m unittest discover -s tests`.
+The app has Run/Stop rather than interactive stepping; switching and conversion
+are locked while running or waiting for READ input.
 
 ## Task 4 — Documentation and Milestone 4 feedback fixes
 

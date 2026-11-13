@@ -56,8 +56,8 @@ Milestone 5 expands UVSim with:
 - Execution of the currently selected program.
 - Updated editor and READ input validation.
 
-Legacy four-digit file conversion is also required for
-Milestone 5 but remains pending integration verification.
+Use Convert legacy file to save a four-digit program in
+six-digit format and open the result in a new tab.
 
 
 CONTROLS AND WORKFLOW
@@ -72,6 +72,15 @@ CONTROLS AND WORKFLOW
 
    Files containing more than 250 entries are rejected
    without replacing the current program.
+
+   Convert legacy file (next to Open File)
+
+   Choose a four-digit file on disk, then a destination for
+   the six-digit copy. The result opens in a new tab.
+   Conversion uses the saved file, not unsaved editor edits.
+   Canceling either dialog preserves the session. The source
+   and files already open in any tab cannot be overwritten.
+   Conversion is disabled while running or waiting for READ.
 
 2. Save
 
@@ -313,8 +322,9 @@ LEGACY FILE CONVERSION
 Earlier milestones used signed four-digit words
 and 100 memory addresses.
 
-Milestone 5 requires support for converting legacy
-four-digit files to the new six-digit format.
+Click Convert legacy file, select the original file, then
+choose a destination. The suggested name ends in -six-digit.txt.
+The saved six-digit program opens in a new tab, ready to run.
 
 Examples:
 
@@ -326,11 +336,19 @@ and allow the user to choose an output destination.
 
 Invalid or mixed formats must be rejected.
 
-NOTE:
-The legacy converter has not yet been verified in
-the current integrated working branch. This section
-describes the required behavior, not a completed
-implementation.
+Conversion follows the assignment's ambiguity rule: a word
+whose first two magnitude digits are a valid opcode is treated
+as an instruction, even if the original author intended data.
+For example, +1111 becomes +011011, while +5555 becomes +005555.
+Some older Test3/Test3b/Test4 data use opcode prefixes, so their
+converted outputs differ from earlier milestone results.
+
+Conversion reads the selected file on disk. Unsaved edits in
+an existing tab remain unchanged and are not converted.
+If saving fails, the source, existing destination, and tabs
+are preserved. Invalid files are rejected before asking where
+to save. Existing destination files require the save dialog's
+overwrite confirmation; open documents cannot be overwritten.
 
 
 SAMPLES AND GRADING CHECKS
@@ -340,9 +358,11 @@ Sample programs are located in programs/.
 Files may be opened from any accessible location.
 Quote command-line paths containing spaces.
 
-Earlier sample files may use four-digit words.
-Their compatibility with Milestone 5 must be
-verified before grading.
+Use Convert legacy file for the four-digit sample files.
+Test5 is intentionally malformed and is rejected.
+Converted Test1 with inputs 7 and 5 outputs 000012; Test2 with
+inputs 5 and 7 outputs 000007. See the ambiguity rule above
+when comparing older sample outputs.
 
 Basic Milestone 5 checks:
 
@@ -354,8 +374,9 @@ Basic Milestone 5 checks:
 6. Enter an invalid word such as asdf.
 7. Confirm the editor reports a validation error.
 
-Additional conversion tests are required after
-the converter is integrated.
+Run conversion GUI tests separately:
+
+  python -m unittest tests.test_conversion_ui -v
 
 
 TESTS
@@ -374,15 +395,15 @@ environment is available.
 
 Local Milestone 5 integration verification:
 
-  136 tests run
+  155 tests run
   All passed
 
 Manual GUI checks confirmed multiple tabs,
 six-digit word validation, three-digit addresses,
 and successful execution of +043000.
 
-These results were recorded before final
-legacy-converter integration.
+These automated results include legacy conversion integration
+(November 13, 2026).
 
 The full test suite must be rerun after all
 Milestone 5 components are integrated.
@@ -433,8 +454,8 @@ been integrated and tested locally.
 The class definitions and diagram have been
 updated to reflect the current GUI architecture.
 
-Legacy conversion remains pending integration
-and verification.
+Legacy conversion is integrated and covered by automated
+dialog, file-preservation, tab, and execution tests.
 
 Final documentation review, regression testing,
 and team submission checks remain.
