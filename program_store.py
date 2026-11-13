@@ -7,8 +7,8 @@ Milestone 4/milestone-4.md.
 import os
 import tempfile
 
-from word import Word
 from uvsim import MEMORY_SIZE, check_program_length
+from word import Word
 
 MAX_PROGRAM_WORDS = MEMORY_SIZE
 
@@ -30,8 +30,8 @@ class ProgramStore:
     def load(self, path: str) -> list[Word]:
         """Return the validated words in the file at path.
 
-        Keep loader.load_program's rules and line-numbered messages: blank
-        lines ignored, at most MAX_PROGRAM_WORDS. Raise OSError or ValueError.
+        Blank lines are ignored and errors include source line numbers.
+        Raise OSError or ValueError.
         """
         words = []
         with open(path, "r", encoding="utf-8-sig") as source:
