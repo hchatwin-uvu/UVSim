@@ -29,8 +29,8 @@ class UVSimApp:
         self._untitled_count = 0
         self.theme = theme if theme is not None else load_theme()
         root.title("UVSim | BasicML simulator")
-        root.geometry("1100x720")
-        root.minsize(1000, 620)
+        root.geometry("1100x840")
+        root.minsize(1000, 720)
         root.protocol("WM_DELETE_WINDOW", self.close)
         frame = ttk.Frame(root, padding=20)
         frame.pack(fill="both", expand=True)

@@ -19,9 +19,9 @@ Run tests with `python -m unittest discover -s tests -v`.
 
 ## Milestone 4
 
-The interface starts with UVU green (`#4C721D`) and white (`#FFFFFF`). Edit
-[theme.ini](theme.ini) and restart to change both colors. Missing or invalid
-configuration restores UVU defaults. Run again after HALT, Stop, or an error
+The interface starts with green (`#4C721D`) and white (`#FFFFFF`). Edit
+[theme.ini](theme.ini) and restart to change both colors using standard RGB hexadecimal values (`#RRGGBB`). Missing or invalid
+configuration restores the default green-and-white colors. Run again after HALT, Stop, or an error
 without reopening the file.
 
 - [Current GUI design](Milestone%204/gui-design/README.md)

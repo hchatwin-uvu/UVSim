@@ -275,7 +275,11 @@ class EditorPanel:
             return
         x, y, width, height = bounds
         self._edit_index = index
-        self._edit_widget = ttk.Entry(self.tree)
+        # Explicit foreground/background avoids themed overlay text distortion.
+        self._edit_widget = tk.Entry(self.tree, font=("TkDefaultFont", 11),
+                                     fg="#111111", bg="#FFFFFF",
+                                     insertbackground="#111111", relief="solid",
+                                     borderwidth=1, highlightthickness=0)
         self._edit_widget.insert(0, self._entries[index])
         self._edit_widget.place(x=x, y=y, width=width, height=height)
         self._edit_widget.focus_set()
