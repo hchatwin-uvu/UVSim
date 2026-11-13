@@ -129,7 +129,7 @@ class EditorPanel:
             return
         selected = self._selected_indices()
         index = selected[0] if selected else len(self._entries)
-        self._entries.insert(index, "+0000")
+        self._entries.insert(index, "+000000")
         self._changed([index])
 
     def delete_selected(self) -> None:
