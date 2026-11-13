@@ -40,11 +40,12 @@ class ProgramStore:
                 if not text:
                     continue
                 try:
-                    words.append(Word.parse(text))
+                    word = Word.parse(text)
                 except ValueError as error:
                     raise ValueError(
-                        f"Invalid BasicML word on line {line_number}: {error}"
+                        f"Invalid BasicML word on line {line_number}: {text}: {error}"
                     ) from error
+                words.append(word)
                 check_program_length(len(words))
         return words
 

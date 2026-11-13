@@ -9,7 +9,7 @@ Milestone 3/milestone-3.md. Coordinate READ/WRITE changes in
 operations/io_memory.py with WP-3. No execution behavior is implemented here.
 """
 from uvsim import UVSim
-from word import Word
+from word import Word, MIN_WORD, MAX_WORD
 from collections.abc import Iterable
 from enum import Enum, auto
 import input_validation
@@ -35,6 +35,16 @@ class SimulatorController:
         self._message = "Open a BasicML file to begin"
         self._outputs = []
         self._pending_read: int | None = None
+
+    def clear(self) -> None:
+        """Clear inactive execution when selecting a different document."""
+        if self._state in (ControllerState.RUNNING, ControllerState.WAITING_INPUT):
+            raise ValueError("Stop the current program before switching documents.")
+        self.machine = UVSim()
+        self._state = ControllerState.EMPTY
+        self._message = "Run uses the selected document's current contents."
+        self._outputs = []
+        self._pending_read = None
 
     def load_program(self, words: Iterable[Word]) -> bool:
         """Replaces load_file (Milestone 4).
@@ -105,7 +115,7 @@ class SimulatorController:
                     if kind == "READ":
                         self._pending_read = value
                         self._state = ControllerState.WAITING_INPUT
-                        self._message = "Input a word(-9999 to 9999)"
+                        self._message = f"Input a word ({MIN_WORD} to {MAX_WORD})"
                         return
 
                     if kind == "WRITE":
