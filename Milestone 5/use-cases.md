@@ -1,16 +1,16 @@
 # Milestone 5 use cases
-Team A | Draft for integration review
+Team A | Integrated workflows
 
 These extend the existing Milestone 4 use cases.
 
 ## UC-24 — Convert a legacy program
 **Actor:** Student. **Precondition:** A supported four-digit BasicML file exists.
-1. User selects the legacy file or conversion action.
+1. User selects Convert legacy file and chooses a saved four-digit file on disk.
 2. Application identifies the format and validates the input.
 3. Backend converts recognized opcodes to three-digit opcodes and three-digit operands, and converts data without changing its value or sign.
 4. User chooses a destination for the converted file.
-5. Application writes the converted six-digit program and reports success.
-**Alternatives:** Mixed/invalid format is rejected; canceled destination selection makes no changes; write failure preserves the original and reports an error.
+5. Application writes the converted six-digit program, opens it in a new tab, and reports success.
+**Alternatives:** Mixed/invalid format is rejected; canceled destination selection makes no changes; source or open-document overwrite is rejected; write failure preserves the original and reports an error. Unsaved editor edits are not converted.
 **Postcondition:** Source file remains unchanged; saved output is available for loading and execution.
 
 ## UC-25 — Open and switch among multiple programs
@@ -18,7 +18,7 @@ These extend the existing Milestone 4 use cases.
 1. User opens a program in a new tab.
 2. Application maintains that tab's source, path, and dirty state independently.
 3. User switches tabs, edits, saves, or runs the selected document.
-**Alternative:** While execution is running, awaiting READ, or stepping, switching is disabled.
+**Alternative:** While execution is running or awaiting READ, switching is disabled.
 **Postcondition:** Each tab retains its own source and save destination.
 
 ## UC-26 — Close a modified tab
@@ -32,7 +32,7 @@ These extend the existing Milestone 4 use cases.
 **Actor:** Student. **Precondition:** Execution is inactive and selected source is valid.
 1. User selects a tab and chooses Run.
 2. Shared engine loads that tab's current source, including unsaved edits.
-3. Tab switching remains disabled during running, READ wait, and stepping.
+3. Tab switching remains disabled during running or waiting for READ.
 4. Completion or Stop restores tab switching.
 **Postcondition:** Other tabs' contents and paths remain unchanged.
 
