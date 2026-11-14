@@ -3,43 +3,45 @@ UVSim sample program checks
 
 Run these commands from the repository root with Python 3.10 or newer.
 Use python3 or py -3 instead of python if required by your system.
-These programs require the implemented UVSim.step/run execution loop.
+These are legacy four-digit files. Launch python main.py, use Convert legacy
+file to save a six-digit copy, then Run the newly opened tab. The commands
+below only open the original source; convert it before execution.
 
 MULTIPLY (opcode 33)
 python main.py programs/Multiply.txt
-Enter 7, then 5, pressing Enter after each: expected output 0035.
-Run again with -7 and 5: expected output -0035.
-Run again with 7 and 0: expected output 0000.
-Run again with 9999 and 2: expected output 9998 after overflow truncation.
+Enter 7, then 5, pressing Enter after each: expected output 000035.
+Run again with -7 and 5: expected output -000035.
+Run again with 7 and 0: expected output 000000.
+Run again with 9999 and 2: expected output 019998 (no six-digit overflow).
 
 DIVIDE (opcode 32)
 python main.py programs/Divide.txt
-Enter 12, then 3: expected output 0004.
-Run again with 7 and 3: expected output 0002.
-Run again with -7 and 3: expected output -0002 (truncation toward zero).
-Run again with 7 and 0: expected division-by-zero error and exit status 1.
+Enter 12, then 3: expected output 000004.
+Run again with 7 and 3: expected output 000002.
+Run again with -7 and 3: expected output -000002 (truncation toward zero).
+Run again with 7 and 0: expected division-by-zero error in the GUI status field.
 
 BRANCH (opcode 40)
 python main.py programs/Branch.txt
-No input is required. Expected output: one line containing 1234.
-The branch jumps from address 00 to 02, skipping a WRITE of unused memory.
-An extra 0000 line means the instruction was not skipped correctly.
+No input is required. Expected output: one line containing 001234.
+The branch jumps from address 000 to 002, skipping a WRITE of unused memory.
+An extra 000000 line means the instruction was not skipped correctly.
 
 BRANCHZERO (opcode 42)
 python main.py programs/BranchZero.txt
-Enter 0: expected output 0001, indicating the zero branch was taken.
-Run again with 7: expected output -0001, indicating it was not taken.
-Run again with -7: expected output -0001.
+Enter 0: expected output 000001, indicating the zero branch was taken.
+Run again with 7: expected output -000001, indicating it was not taken.
+Run again with -7: expected output -000001.
 Each run should print exactly one result and halt.
 
 EXISTING SUPPLIED PROGRAMS
 python main.py programs/Test1.txt
-Enter 7, then 5: expected output 0012 (addition).
+Enter 7, then 5: expected output 000012 (addition).
 
 python main.py programs/Test2.txt
-Enter 7, then 5: expected output 0007.
-Run again with 5 and 7: expected output 0007 (negative branch taken).
-Run again with 7 and 7: expected output 0007.
+Enter 7, then 5: expected output 000007.
+Run again with 5 and 7: expected output 000007 (negative branch taken).
+Run again with 7 and 7: expected output 000007.
 Test2 uses subtraction to compare the numbers and prints the larger input.
 
 OPCODE COVERAGE
@@ -52,5 +54,7 @@ BranchZero: READ 10, LOAD 20, BRANCHZERO 42, WRITE 11, BRANCH 40, HALT 43.
 Together these programs exercise all 12 BasicML opcodes. They are manual
 program checks, separate from the automated unit tests in tests/.
 
-Test3 and Test3b cover arithmetic with/without overflow; Test4 covers branches.
+Test3/Test3b cover arithmetic; Test4 covers branches. Conversion treats legacy
+data starting with a valid opcode as an instruction per the assignment rule
+(e.g. +1111 becomes +011011), so their outputs differ from earlier milestones.
 Test5 is intentionally malformed and should be rejected.

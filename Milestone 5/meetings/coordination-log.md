@@ -16,5 +16,10 @@ Team A | Record of reported coordination, not invented meeting attendance
 - Scrum master accepted Task 4 (documentation and prior feedback fixes).
 - Action: coordinate shared `gui/app.py` and `gui/editor_panel.py` changes with Hayden before merging.
 
+## Submission handoff (reported by Hayden)
+- Hayden took over as scrum leader and is preparing the submission.
+- Tasks 1–3 and the Task 4 implementation are merged; 155 automated tests pass.
+- Remaining actions: record final visual checks and supply actual meeting details.
+
 ## Pending actual meeting details
 Record the date/time, participants, discussion, decisions, owners, and next actions of each actual sprint meeting here. Do not invent meeting dates, attendance, or outcomes.

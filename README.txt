@@ -62,6 +62,10 @@ six-digit format and open the result in a new tab.
 
 CONTROLS AND WORKFLOW
 
+New creates an empty tab; Close tab closes the selected tab and
+asks Save/Discard/Cancel if it has unsaved edits. Opening an
+already open file selects its tab without discarding edits.
+
 1. Open File
 
    Browse any accessible folder and select a BasicML file.
@@ -405,8 +409,8 @@ and successful execution of +043000.
 These automated results include legacy conversion integration
 (November 13, 2026).
 
-The full test suite must be rerun after all
-Milestone 5 components are integrated.
+Post-merge verification on November 13, 2026: 155 tests passed
+with Python 3.13 on Windows, with no failures or skips.
 
 
 MILESTONE 5 DOCUMENTATION
